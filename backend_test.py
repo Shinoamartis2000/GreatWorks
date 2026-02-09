@@ -248,6 +248,7 @@ class NGOAPITester:
         print(f"Testing against: {self.base_url}")
         
         self.test_basic_endpoints()
+        self.test_authentication()  # Test auth first to get token
         self.test_content_endpoints()
         self.test_event_endpoints()
         self.test_volunteer_endpoints()
@@ -258,6 +259,7 @@ class NGOAPITester:
         self.test_integration_endpoints()
         self.test_post_endpoints()
         self.test_volunteer_form()
+        self.test_admin_crud_operations()  # Test CRUD operations
         
         # Print summary
         print(f"\n📊 Test Results:")
