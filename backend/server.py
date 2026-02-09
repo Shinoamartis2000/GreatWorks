@@ -67,6 +67,64 @@ async def insert_doc(collection, doc: Dict[str, Any]) -> Dict[str, Any]:
     return doc
 
 
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def create_access_token(data: Dict[str, Any], expires_delta: timedelta) -> str:
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + expires_delta
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
+
+
+async def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
+    return await db.users.find_one({"user_id": user_id}, {"_id": 0})
+
+
+async def get_current_user(request: Request) -> Dict[str, Any]:
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header.replace("Bearer ", "")
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user = await get_user_by_id(payload.get("user_id", ""))
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        return user
+
+    session_token = request.cookies.get("session_token")
+    if session_token:
+        session = await db.user_sessions.find_one({"session_token": session_token}, {"_id": 0})
+        if not session:
+            raise HTTPException(status_code=401, detail="Session not found")
+        expires_at = session.get("expires_at")
+        if isinstance(expires_at, str):
+            expires_at = datetime.fromisoformat(expires_at)
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if expires_at < datetime.now(timezone.utc):
+            raise HTTPException(status_code=401, detail="Session expired")
+        user = await get_user_by_id(session.get("user_id", ""))
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        return user
+
+    raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+def require_roles(roles: List[str]):
+    async def role_checker(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
+        if user.get("role") not in roles:
+            raise HTTPException(status_code=403, detail="Access denied")
+        return user
+
+    return role_checker
+
+
 async def get_settings_doc() -> Dict[str, Any]:
     doc = await db.settings.find_one({"key": "site"}, {"_id": 0})
     if not doc:
