@@ -667,7 +667,9 @@ const Admin = () => {
             </form>
             <button
               onClick={async () => {
-                await api.post("/reports/generate", new FormData());
+                const formData = new FormData();
+                formData.append("period", "monthly");
+                await api.post("/reports/generate", formData);
                 fetchAll();
               }}
               className="mt-4 rounded-full border border-brand-forest/30 px-4 py-2 text-sm text-brand-forest"
