@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { contactMethods } from "@/data/siteData";
