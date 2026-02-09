@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { givingOptions } from "@/data/siteData";
@@ -8,6 +9,7 @@ const Donate = () => {
   const [goals, setGoals] = useState([]);
   const [donation, setDonation] = useState({ name: "", email: "", amount: 50, recurring: false, frequency: "Monthly" });
   const [calculator, setCalculator] = useState(50);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +30,12 @@ const Donate = () => {
 
   const submitDonation = async (event) => {
     event.preventDefault();
+    const validationErrors = {};
+    if (!donation.name) validationErrors.name = "Full name is required";
+    if (!donation.email) validationErrors.email = "Email is required";
+    if (!donation.amount || Number(donation.amount) < 5) validationErrors.amount = "Minimum donation is 5";
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length) return;
     await api.post("/donations", {
       donor_name: donation.name,
       donor_email: donation.email,
@@ -43,7 +51,7 @@ const Donate = () => {
   const progress = goal ? Math.min(100, Math.round((goal.current_amount / goal.target_amount) * 100)) : 42;
 
   return (
-    <div className="section-gradient" data-testid="donate-page">
+    <motion.div className="section-gradient" data-testid="donate-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Donate</p>
         <h1 className="mt-3 font-serif text-4xl text-brand-forest">Your gift rebuilds futures</h1>
@@ -59,6 +67,7 @@ const Donate = () => {
                 onChange={(event) => setDonation({ ...donation, name: event.target.value })}
                 data-testid="donate-name-input"
               />
+              {errors.name && <p className="text-xs text-brand-red">{errors.name}</p>}
               <input
                 type="email"
                 placeholder="Email address"
@@ -67,6 +76,7 @@ const Donate = () => {
                 onChange={(event) => setDonation({ ...donation, email: event.target.value })}
                 data-testid="donate-email-input"
               />
+              {errors.email && <p className="text-xs text-brand-red">{errors.email}</p>}
               <input
                 type="number"
                 min="5"
@@ -75,6 +85,7 @@ const Donate = () => {
                 onChange={(event) => setDonation({ ...donation, amount: event.target.value })}
                 data-testid="donate-amount-input"
               />
+              {errors.amount && <p className="text-xs text-brand-red">{errors.amount}</p>}
               <label className="flex items-center gap-3 text-sm text-brand-muted">
                 <input
                   type="checkbox"
@@ -98,7 +109,7 @@ const Donate = () => {
               )}
               <button
                 type="submit"
-                className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white"
+                className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                 data-testid="donate-submit-button"
               >
                 Submit Donation
@@ -108,7 +119,7 @@ const Donate = () => {
               <p className="text-xs uppercase tracking-widest text-brand-muted">GoFundMe</p>
               <a
                 href={settings.gofundme_url || "#"}
-                className="mt-2 inline-flex rounded-full bg-brand-terracotta px-5 py-3 text-sm font-semibold text-white"
+                className="mt-2 inline-flex rounded-full bg-brand-red px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                 data-testid="gofundme-link"
               >
                 Support our GoFundMe
@@ -159,7 +170,7 @@ const Donate = () => {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
