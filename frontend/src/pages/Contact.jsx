@@ -46,6 +46,7 @@ const Contact = () => {
                 onChange={(event) => setForm({ ...form, name: event.target.value })}
                 data-testid="contact-name-input"
               />
+            {errors.name && <p className="text-xs text-brand-red">{errors.name}</p>}
               <input
                 type="email"
                 placeholder="Email"
@@ -54,6 +55,7 @@ const Contact = () => {
                 onChange={(event) => setForm({ ...form, email: event.target.value })}
                 data-testid="contact-email-input"
               />
+            {errors.email && <p className="text-xs text-brand-red">{errors.email}</p>}
               <input
                 type="text"
                 placeholder="Phone"
@@ -69,9 +71,10 @@ const Contact = () => {
                 onChange={(event) => setForm({ ...form, message: event.target.value })}
                 data-testid="contact-message-input"
               />
+            {errors.message && <p className="text-xs text-brand-red">{errors.message}</p>}
               <button
                 type="submit"
-                className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white"
+              className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                 data-testid="contact-submit-button"
               >
                 Send message
