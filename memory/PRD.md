@@ -12,7 +12,7 @@ Create a professional NGO website for "GreatWorks Foundation" that communicates 
 
 ## Implemented Features
 - Multi-page NGO site (Home, About, Stories, Gallery, Donate, Get Involved, Contact, Admin Dashboard).
-- CMS: blog posts, pages, media library with upload/optimization, scheduling fields, revisions, tags.
+- CMS: WYSIWYG blog + pages, media library with upload/optimization, scheduling fields, revisions, tags.
 - Event management: create events, registrations, waitlist handling, feedback, ICS downloads.
 - Volunteer management: application portal with file upload, skills, availability, status, hours tracking.
 - Donor/DRM: donor profiles, donations, goals, receipts (PDF), impact updates.
@@ -20,6 +20,7 @@ Create a professional NGO website for "GreatWorks Foundation" that communicates 
 - Newsletter signup + contact inquiries stored in DB.
 - Annual report upload + download.
 - Integrations storage (Mailchimp/Stripe/PayPal/SMS/GA) and webhooks.
+- Auth: JWT email/password plus Emergent Google OAuth with role-based access (Admin/Editor/Volunteer).
 - Media gallery with 87+ assets, partner carousel, success counters, event countdown, social sharing.
 
 ## Prioritized Backlog
