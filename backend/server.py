@@ -543,7 +543,11 @@ async def list_contacts():
 
 
 @api_router.post("/posts")
-async def create_post(payload: BlogPostIn, background_tasks: BackgroundTasks):
+async def create_post(
+    payload: BlogPostIn,
+    background_tasks: BackgroundTasks,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
     doc = payload.model_dump()
     doc.update(
         {
@@ -585,7 +589,11 @@ async def get_post(slug: str):
 
 
 @api_router.put("/posts/{post_id}")
-async def update_post(post_id: str, payload: BlogPostIn):
+async def update_post(
+    post_id: str,
+    payload: BlogPostIn,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
     existing = await db.posts.find_one({"id": post_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -597,13 +605,13 @@ async def update_post(post_id: str, payload: BlogPostIn):
 
 
 @api_router.delete("/posts/{post_id}")
-async def delete_post(post_id: str):
+async def delete_post(post_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     await db.posts.delete_one({"id": post_id})
     return {"status": "deleted"}
 
 
 @api_router.post("/pages")
-async def create_page(payload: PageContentIn):
+async def create_page(payload: PageContentIn, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "version": 1, "revisions": [], "updated_at": now_iso()})
     await insert_doc(db.pages, doc)
@@ -624,7 +632,11 @@ async def list_pages():
 
 
 @api_router.put("/pages/{page_id}")
-async def update_page(page_id: str, payload: PageContentIn):
+async def update_page(
+    page_id: str,
+    payload: PageContentIn,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
     existing = await db.pages.find_one({"id": page_id}, {"_id": 0})
     if not existing:
         raise HTTPException(status_code=404, detail="Page not found")
@@ -636,7 +648,11 @@ async def update_page(page_id: str, payload: PageContentIn):
 
 
 @api_router.post("/media/upload")
-async def upload_media(files: List[UploadFile] = File(...), program_type: str = Form("General")):
+async def upload_media(
+    files: List[UploadFile] = File(...),
+    program_type: str = Form("General"),
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
     saved_items = []
     for upload in files:
         content = await upload.read()
@@ -695,8 +711,19 @@ async def list_media(program_type: Optional[str] = None):
     return await db.media.find(query, {"_id": 0}).sort("created_at", -1).to_list(5000)
 
 
+@api_router.put("/media/{media_id}")
+async def update_media(
+    media_id: str,
+    tags: List[str] = Form([]),
+    program_type: str = Form("General"),
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
+    await db.media.update_one({"id": media_id}, {"$set": {"tags": tags, "program_type": program_type}})
+    return await db.media.find_one({"id": media_id}, {"_id": 0})
+
+
 @api_router.delete("/media/{media_id}")
-async def delete_media(media_id: str):
+async def delete_media(media_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     await db.media.delete_one({"id": media_id})
     return {"status": "deleted"}
 
@@ -711,7 +738,11 @@ async def get_storage_usage():
 
 
 @api_router.post("/events")
-async def create_event(payload: EventIn, background_tasks: BackgroundTasks):
+async def create_event(
+    payload: EventIn,
+    background_tasks: BackgroundTasks,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
     doc = payload.model_dump()
     doc.update(
         {
@@ -741,7 +772,15 @@ async def get_event(event_id: str):
 
 
 @api_router.put("/events/{event_id}")
-async def update_event(event_id: str, payload: EventIn):
+async def update_event(
+    event_id: str,
+    payload: EventIn,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
+@api_router.delete("/events/{event_id}")
+async def delete_event(event_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
+    await db.events.delete_one({"id": event_id})
+    return {"status": "deleted"}
     await db.events.update_one({"id": event_id}, {"$set": payload.model_dump()})
     return await db.events.find_one({"id": event_id}, {"_id": 0})
 
@@ -862,24 +901,36 @@ async def create_volunteer(
 
 
 @api_router.get("/volunteers")
-async def list_volunteers():
+async def list_volunteers(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.volunteers.find({}, {"_id": 0}).sort("created_at", -1).to_list(2000)
 
 
 @api_router.put("/volunteers/{volunteer_id}")
-async def update_volunteer(volunteer_id: str, payload: VolunteerUpdateIn):
+async def update_volunteer(
+    volunteer_id: str,
+    payload: VolunteerUpdateIn,
+    user: Dict[str, Any] = Depends(require_roles(["Admin"])),
+):
     await db.volunteers.update_one({"id": volunteer_id}, {"$set": payload.model_dump()})
     return await db.volunteers.find_one({"id": volunteer_id}, {"_id": 0})
 
 
 @api_router.post("/volunteers/{volunteer_id}/hours")
-async def log_hours(volunteer_id: str, hours: float = Form(...)):
+async def log_hours(
+    volunteer_id: str,
+    hours: float = Form(...),
+    user: Dict[str, Any] = Depends(require_roles(["Admin"])),
+):
+@api_router.delete("/volunteers/{volunteer_id}")
+async def delete_volunteer(volunteer_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.volunteers.delete_one({"id": volunteer_id})
+    return {"status": "deleted"}
     await db.volunteers.update_one({"id": volunteer_id}, {"$inc": {"hours_logged": hours}})
     return {"status": "logged"}
 
 
 @api_router.post("/donors")
-async def create_donor(payload: DonorIn):
+async def create_donor(payload: DonorIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso(), "total_donated": 0})
     await insert_doc(db.donors, doc)
@@ -887,7 +938,17 @@ async def create_donor(payload: DonorIn):
 
 
 @api_router.get("/donors")
-async def list_donors():
+async def list_donors(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+@api_router.put("/donors/{donor_id}")
+async def update_donor(donor_id: str, payload: DonorIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.donors.update_one({"id": donor_id}, {"$set": payload.model_dump()})
+    return await db.donors.find_one({"id": donor_id}, {"_id": 0})
+
+
+@api_router.delete("/donors/{donor_id}")
+async def delete_donor(donor_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.donors.delete_one({"id": donor_id})
+    return {"status": "deleted"}
     return await db.donors.find({}, {"_id": 0}).to_list(2000)
 
 
@@ -934,7 +995,7 @@ async def create_donation(payload: DonationIn, background_tasks: BackgroundTasks
 
 
 @api_router.get("/donations")
-async def list_donations():
+async def list_donations(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.donations.find({}, {"_id": 0}).sort("created_at", -1).to_list(2000)
 
 
@@ -959,7 +1020,17 @@ async def donation_receipt(donation_id: str):
 
 
 @api_router.post("/goals")
-async def create_goal(payload: DonationGoalIn):
+async def create_goal(payload: DonationGoalIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+@api_router.put("/goals/{goal_id}")
+async def update_goal(goal_id: str, payload: DonationGoalIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.goals.update_one({"id": goal_id}, {"$set": payload.model_dump()})
+    return await db.goals.find_one({"id": goal_id}, {"_id": 0})
+
+
+@api_router.delete("/goals/{goal_id}")
+async def delete_goal(goal_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.goals.delete_one({"id": goal_id})
+    return {"status": "deleted"}
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "current_amount": 0, "created_at": now_iso()})
     await insert_doc(db.goals, doc)
@@ -972,7 +1043,7 @@ async def list_goals():
 
 
 @api_router.post("/impact-updates")
-async def create_impact_update(payload: ImpactUpdateIn):
+async def create_impact_update(payload: ImpactUpdateIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
     await insert_doc(db.impact_updates, doc)
@@ -985,19 +1056,19 @@ async def list_impact_updates(donor_id: str):
 
 
 @api_router.post("/integrations")
-async def save_integration(payload: IntegrationConfigIn):
+async def save_integration(payload: IntegrationConfigIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     doc = payload.model_dump()
     await db.integrations.update_one({"type": payload.type}, {"$set": doc}, upsert=True)
     return doc
 
 
 @api_router.get("/integrations")
-async def list_integrations():
+async def list_integrations(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.integrations.find({}, {"_id": 0}).to_list(2000)
 
 
 @api_router.post("/webhooks")
-async def create_webhook(payload: WebhookIn):
+async def create_webhook(payload: WebhookIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
     await insert_doc(db.webhooks, doc)
@@ -1005,12 +1076,12 @@ async def create_webhook(payload: WebhookIn):
 
 
 @api_router.get("/webhooks")
-async def list_webhooks():
+async def list_webhooks(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.webhooks.find({}, {"_id": 0}).to_list(2000)
 
 
 @api_router.post("/social-posts")
-async def create_social_post(payload: SocialPostIn):
+async def create_social_post(payload: SocialPostIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "status": "queued", "created_at": now_iso()})
     await insert_doc(db.social_posts, doc)
@@ -1018,12 +1089,12 @@ async def create_social_post(payload: SocialPostIn):
 
 
 @api_router.get("/social-posts")
-async def list_social_posts():
+async def list_social_posts(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.social_posts.find({}, {"_id": 0}).to_list(2000)
 
 
 @api_router.post("/programs")
-async def create_program(payload: ProgramIn):
+async def create_program(payload: ProgramIn, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4())})
     await insert_doc(db.programs, doc)
@@ -1035,8 +1106,24 @@ async def list_programs():
     return await db.programs.find({}, {"_id": 0}).to_list(2000)
 
 
+@api_router.put("/programs/{program_id}")
+async def update_program(
+    program_id: str,
+    payload: ProgramIn,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
+    await db.programs.update_one({"id": program_id}, {"$set": payload.model_dump()})
+    return await db.programs.find_one({"id": program_id}, {"_id": 0})
+
+
+@api_router.delete("/programs/{program_id}")
+async def delete_program(program_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
+    await db.programs.delete_one({"id": program_id})
+    return {"status": "deleted"}
+
+
 @api_router.post("/partners")
-async def create_partner(payload: PartnerIn):
+async def create_partner(payload: PartnerIn, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4())})
     await insert_doc(db.partners, doc)
@@ -1048,8 +1135,24 @@ async def list_partners():
     return await db.partners.find({}, {"_id": 0}).to_list(2000)
 
 
+@api_router.put("/partners/{partner_id}")
+async def update_partner(
+    partner_id: str,
+    payload: PartnerIn,
+    user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
+):
+    await db.partners.update_one({"id": partner_id}, {"$set": payload.model_dump()})
+    return await db.partners.find_one({"id": partner_id}, {"_id": 0})
+
+
+@api_router.delete("/partners/{partner_id}")
+async def delete_partner(partner_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
+    await db.partners.delete_one({"id": partner_id})
+    return {"status": "deleted"}
+
+
 @api_router.post("/gallery-collections")
-async def create_gallery_collection(payload: GalleryCollectionIn):
+async def create_gallery_collection(payload: GalleryCollectionIn, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
     await insert_doc(db.gallery_collections, doc)
@@ -1062,7 +1165,7 @@ async def list_gallery_collections():
 
 
 @api_router.post("/staff-users")
-async def create_staff_user(payload: StaffUserIn):
+async def create_staff_user(payload: StaffUserIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
     await insert_doc(db.staff_users, doc)
@@ -1070,12 +1173,20 @@ async def create_staff_user(payload: StaffUserIn):
 
 
 @api_router.get("/staff-users")
-async def list_staff_users():
+async def list_staff_users(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.staff_users.find({}, {"_id": 0}).to_list(2000)
 
 
 @api_router.post("/annual-reports")
-async def upload_annual_report(title: str = Form(...), year: str = Form(...), file: UploadFile = File(...)):
+async def upload_annual_report(
+    title: str = Form(...),
+    year: str = Form(...),
+    file: UploadFile = File(...),
+    user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+@api_router.delete("/annual-reports/{report_id}")
+async def delete_annual_report(report_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.reports_library.delete_one({"id": report_id})
+    return {"status": "deleted"}
     content = await file.read()
     filename = f"{uuid.uuid4()}-{file.filename}"
     file_path = UPLOAD_DIR / "reports" / filename
@@ -1143,7 +1254,7 @@ async def analytics_summary():
 
 
 @api_router.post("/reports/generate")
-async def generate_report(period: str = Form("monthly")):
+async def generate_report(period: str = Form("monthly"), user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     summary = await analytics_summary()
     report_doc = {
         "id": str(uuid.uuid4()),
@@ -1156,12 +1267,31 @@ async def generate_report(period: str = Form("monthly")):
 
 
 @api_router.get("/reports")
-async def list_reports():
+async def list_reports(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     return await db.reports.find({}, {"_id": 0}).to_list(2000)
 
 
 @api_router.get("/reports/{report_id}/export")
-async def export_report(report_id: str, format: str = "excel"):
+async def export_report(report_id: str, format: str = "excel", user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    report = await db.reports.find_one({"id": report_id}, {"_id": 0})
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    df = pd.DataFrame([report["data"]])
+    if format == "excel":
+        output = io.BytesIO()
+        df.to_excel(output, index=False)
+        output.seek(0)
+        return StreamingResponse(output, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    output = io.BytesIO()
+    df.to_csv(output, index=False)
+    output.seek(0)
+    return StreamingResponse(output, media_type="text/csv")
+
+
+@api_router.delete("/reports/{report_id}")
+async def delete_report(report_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.reports.delete_one({"id": report_id})
+    return {"status": "deleted"}
     report = await db.reports.find_one({"id": report_id}, {"_id": 0})
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
