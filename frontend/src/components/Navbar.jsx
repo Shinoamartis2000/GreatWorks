@@ -37,6 +37,7 @@ const Navbar = () => {
 
         <div className="hidden items-center gap-4 lg:flex">
           <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-brand-forest" data-testid="social-handle">@greatworksf</span>
             <a
               href="https://facebook.com/greatworksf"
               target="_blank"
