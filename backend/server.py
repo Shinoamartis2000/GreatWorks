@@ -62,6 +62,11 @@ def auto_tags(filename: str) -> List[str]:
     return list(dict.fromkeys(parts))[:8]
 
 
+def strip_html(value: str, length: int = 160) -> str:
+    text = re.sub("<[^<]+?>", "", value or "")
+    return text[:length]
+
+
 async def insert_doc(collection, doc: Dict[str, Any]) -> Dict[str, Any]:
     await collection.insert_one({**doc})
     doc.pop("_id", None)
