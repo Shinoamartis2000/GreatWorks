@@ -160,11 +160,11 @@ class NGOAPITester:
         """Test integration endpoints"""
         print("\n=== Testing Integration Endpoints ===")
         
-        # Test integrations
-        self.run_test("List Integrations", "GET", "integrations", 200)
+        # Test integrations (requires auth)
+        self.run_test("List Integrations", "GET", "integrations", 200, auth_required=True)
         
-        # Test webhooks
-        self.run_test("List Webhooks", "GET", "webhooks", 200)
+        # Test webhooks (requires auth)
+        self.run_test("List Webhooks", "GET", "webhooks", 200, auth_required=True)
 
     def test_post_endpoints(self):
         """Test POST endpoints with sample data"""
