@@ -1296,19 +1296,6 @@ async def export_report(report_id: str, format: str = "excel", user: Dict[str, A
 async def delete_report(report_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     await db.reports.delete_one({"id": report_id})
     return {"status": "deleted"}
-    report = await db.reports.find_one({"id": report_id}, {"_id": 0})
-    if not report:
-        raise HTTPException(status_code=404, detail="Report not found")
-    df = pd.DataFrame([report["data"]])
-    if format == "excel":
-        output = io.BytesIO()
-        df.to_excel(output, index=False)
-        output.seek(0)
-        return StreamingResponse(output, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-    output = io.BytesIO()
-    df.to_csv(output, index=False)
-    output.seek(0)
-    return StreamingResponse(output, media_type="text/csv")
 
 
 @api_router.get("/notifications")
