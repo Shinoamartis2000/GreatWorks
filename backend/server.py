@@ -597,6 +597,8 @@ async def create_post(
     user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
 ):
     doc = payload.model_dump()
+    if not doc.get("excerpt"):
+        doc["excerpt"] = strip_html(payload.content)
     doc.update(
         {
             "id": str(uuid.uuid4()),
@@ -647,6 +649,8 @@ async def update_post(
         raise HTTPException(status_code=404, detail="Post not found")
     revision = {"version": existing.get("version", 1), "content": existing.get("content", ""), "updated_at": now_iso()}
     update_doc = payload.model_dump()
+    if not update_doc.get("excerpt"):
+        update_doc["excerpt"] = strip_html(payload.content)
     update_doc.update({"slug": slugify(payload.title), "updated_at": now_iso()})
     await db.posts.update_one({"id": post_id}, {"$set": update_doc, "$push": {"revisions": revision}, "$inc": {"version": 1}})
     return await db.posts.find_one({"id": post_id}, {"_id": 0})
