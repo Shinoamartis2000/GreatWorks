@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { api, buildFileUrl } from "@/lib/api";
 
 const About = () => {
@@ -13,14 +14,14 @@ const About = () => {
   }, []);
 
   return (
-    <div className="section-gradient">
+    <motion.div className="section-gradient" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12" data-testid="about-story">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Our Story</p>
         <h1 className="mt-3 font-serif text-4xl text-brand-forest">Rooted in hope, powered by neighbors</h1>
         <p className="mt-6 max-w-3xl text-lg text-brand-muted">
-          GreatWorks Foundation was created to respond quickly when communities are shaken by crisis. We work with
-          local leaders to rebuild schools, restore clean water, and create long-term economic stability for families
-          rebuilding their lives.
+          GreatWorks Foundation focuses on Enugu communities through our Urban Scholarship Program and Valentine
+          Outreach 2022. We deliver education funding, care packs, and compassionate relief that restores dignity and
+          long-term stability.
         </p>
       </section>
 
@@ -91,7 +92,7 @@ const About = () => {
           ))}
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
