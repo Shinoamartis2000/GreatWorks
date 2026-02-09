@@ -425,7 +425,9 @@ async def register_user(payload: UserRegisterIn):
         "created_at": now_iso(),
     }
     await insert_doc(db.users, user)
-    return {"user": user}
+    user_response = {**user}
+    user_response.pop("password_hash", None)
+    return {"user": user_response}
 
 
 @api_router.post("/auth/login")
@@ -436,7 +438,8 @@ async def login_user(payload: UserLoginIn):
     if not verify_password(payload.password, user["password_hash"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = create_access_token({"user_id": user["user_id"], "role": user["role"]}, timedelta(days=SESSION_DAYS))
-    return {"token": token, "user": user}
+    user_response = {k: v for k, v in user.items() if k != "password_hash"}
+    return {"token": token, "user": user_response}
 
 
 @api_router.post("/auth/emergent/session")
