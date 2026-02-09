@@ -193,6 +193,7 @@ class NGOAPITester:
         print("\n=== Testing Volunteer Form ===")
         
         # Test volunteer application (multipart form)
+        url = f"{self.base_url}/api/volunteers"
         volunteer_data = {
             "name": "Test Volunteer",
             "email": f"volunteer_{datetime.now().strftime('%H%M%S')}@example.com",
@@ -201,7 +202,37 @@ class NGOAPITester:
             "availability": "Weekends",
             "motivation": "I want to help the community"
         }
-        self.run_test("Volunteer Application", "POST", "volunteers", 200, volunteer_data)
+        
+        self.tests_run += 1
+        print(f"\n🔍 Testing Volunteer Application...")
+        print(f"   URL: {url}")
+        
+        try:
+            response = requests.post(url, data=volunteer_data, timeout=10)
+            success = response.status_code == 200
+            if success:
+                self.tests_passed += 1
+                print(f"✅ Passed - Status: {response.status_code}")
+                try:
+                    response_data = response.json()
+                    print(f"   Response keys: {list(response_data.keys())}")
+                except:
+                    print(f"   Response: {response.text[:100]}...")
+            else:
+                print(f"❌ Failed - Expected 200, got {response.status_code}")
+                print(f"   Response: {response.text[:200]}...")
+                self.failed_tests.append({
+                    'name': "Volunteer Application",
+                    'expected': 200,
+                    'actual': response.status_code,
+                    'response': response.text[:200]
+                })
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            self.failed_tests.append({
+                'name': "Volunteer Application",
+                'error': str(e)
+            })
 
     def run_all_tests(self):
         """Run all test suites"""
