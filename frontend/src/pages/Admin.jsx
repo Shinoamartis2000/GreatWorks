@@ -185,11 +185,8 @@ const Admin = () => {
               "pages",
               "media",
               "events",
-              "volunteers",
-              "donors",
-              "integrations",
+              ...(isAdmin ? ["volunteers", "donors", "integrations", "reports"] : []),
               "settings",
-              "reports",
             ].map((tab) => (
               <TabsTrigger key={tab} value={tab} data-testid={`admin-tab-${tab}`}>
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
