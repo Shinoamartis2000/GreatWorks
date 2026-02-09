@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import "react-day-picker/dist/style.css";
 import { DayPicker } from "react-day-picker";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
