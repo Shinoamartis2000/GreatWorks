@@ -1238,11 +1238,8 @@ async def upload_annual_report(
     title: str = Form(...),
     year: str = Form(...),
     file: UploadFile = File(...),
-    user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
-@api_router.delete("/annual-reports/{report_id}")
-async def delete_annual_report(report_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
-    await db.reports_library.delete_one({"id": report_id})
-    return {"status": "deleted"}
+    user: Dict[str, Any] = Depends(require_roles(["Admin"]))
+):
     content = await file.read()
     filename = f"{uuid.uuid4()}-{file.filename}"
     file_path = UPLOAD_DIR / "reports" / filename
@@ -1257,6 +1254,12 @@ async def delete_annual_report(report_id: str, user: Dict[str, Any] = Depends(re
     }
     await insert_doc(db.reports_library, doc)
     return doc
+
+
+@api_router.delete("/annual-reports/{report_id}")
+async def delete_annual_report(report_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.reports_library.delete_one({"id": report_id})
+    return {"status": "deleted"}
 
 
 @api_router.get("/annual-reports")
