@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, UploadFile, File, Form, BackgroundTasks, HTTPException
+from fastapi import FastAPI, APIRouter, UploadFile, File, Form, BackgroundTasks, HTTPException, Request, Response, Depends
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
@@ -9,9 +9,11 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from PIL import Image
+from passlib.context import CryptContext
 from fpdf import FPDF
 import pandas as pd
 import hashlib
+import jwt
 import uuid
 import io
 import os
