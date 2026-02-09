@@ -825,12 +825,14 @@ async def update_event(
     payload: EventIn,
     user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"])),
 ):
+    await db.events.update_one({"id": event_id}, {"$set": payload.model_dump()})
+    return await db.events.find_one({"id": event_id}, {"_id": 0})
+
+
 @api_router.delete("/events/{event_id}")
 async def delete_event(event_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
     await db.events.delete_one({"id": event_id})
     return {"status": "deleted"}
-    await db.events.update_one({"id": event_id}, {"$set": payload.model_dump()})
-    return await db.events.find_one({"id": event_id}, {"_id": 0})
 
 
 @api_router.post("/events/{event_id}/register")
