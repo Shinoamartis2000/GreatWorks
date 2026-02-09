@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu } from "lucide-react";
+import { Facebook, Instagram, Menu, Twitter } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { navLinks } from "@/data/siteData";
 
@@ -9,7 +9,7 @@ const Navbar = () => {
 
   return (
     <header
-      className="fixed top-0 z-50 w-full border-b border-white/40 bg-[#F4F1DE]/90 backdrop-blur-md"
+      className="fixed top-0 z-50 w-full border-b border-white/40 bg-[#f5f6fb]/90 backdrop-blur-md"
       data-testid="site-header"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-12">
@@ -27,7 +27,7 @@ const Navbar = () => {
             <Link
               key={link.path}
               to={link.path}
-              className="text-sm font-medium text-brand-slate hover:text-brand-forest"
+              className="text-sm font-medium text-brand-slate transition hover:text-brand-forest"
               data-testid={link.testId}
             >
               {link.name}
@@ -36,11 +36,37 @@ const Navbar = () => {
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <span className="rounded-full border border-brand-forest/20 px-3 py-1 text-sm text-brand-forest" data-testid="social-handle">
-            @greatworksf
-          </span>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://facebook.com/greatworksf"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-brand-forest/20 p-2 text-brand-forest transition hover:-translate-y-0.5"
+              data-testid="nav-social-facebook"
+            >
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a
+              href="https://instagram.com/greatworksf"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-brand-forest/20 p-2 text-brand-forest transition hover:-translate-y-0.5"
+              data-testid="nav-social-instagram"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a
+              href="https://x.com/greatworksf"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-brand-forest/20 p-2 text-brand-forest transition hover:-translate-y-0.5"
+              data-testid="nav-social-x"
+            >
+              <Twitter className="h-4 w-4" />
+            </a>
+          </div>
           <button
-            className="rounded-full border border-brand-forest px-4 py-2 text-xs font-semibold text-brand-forest"
+            className="rounded-full border border-brand-forest px-4 py-2 text-xs font-semibold text-brand-forest transition hover:-translate-y-0.5"
             onClick={() => setLanguage(language === "EN" ? "FR" : "EN")}
             data-testid="nav-language-toggle"
           >
