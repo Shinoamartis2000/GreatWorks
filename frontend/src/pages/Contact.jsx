@@ -22,7 +22,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="section-gradient" data-testid="contact-page">
+    <motion.div className="section-gradient" data-testid="contact-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Contact</p>
         <h1 className="mt-3 font-serif text-4xl text-brand-forest">We are here to help</h1>
@@ -80,7 +80,7 @@ const Contact = () => {
           </form>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
