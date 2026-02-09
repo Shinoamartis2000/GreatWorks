@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { Facebook, Instagram, Twitter } from "lucide-react";
 import { api, buildFileUrl } from "@/lib/api";
 import { navLinks } from "@/data/siteData";
 
@@ -39,9 +40,17 @@ const Footer = () => {
           <p className="mt-3 text-sm text-brand-muted">
             Rebuilding Lives for the Future. Transparent, urgent, and hopeful relief.
           </p>
-          <p className="mt-4 text-sm text-brand-forest" data-testid="footer-social-handle">
-            @greatworksf
-          </p>
+          <div className="mt-4 flex items-center gap-3" data-testid="footer-social-links">
+            <a href="https://facebook.com/greatworksf" target="_blank" rel="noreferrer" data-testid="footer-facebook">
+              <Facebook className="h-4 w-4 text-brand-forest" />
+            </a>
+            <a href="https://instagram.com/greatworksf" target="_blank" rel="noreferrer" data-testid="footer-instagram">
+              <Instagram className="h-4 w-4 text-brand-forest" />
+            </a>
+            <a href="https://x.com/greatworksf" target="_blank" rel="noreferrer" data-testid="footer-x">
+              <Twitter className="h-4 w-4 text-brand-forest" />
+            </a>
+          </div>
         </div>
         <div>
           <h4 className="text-sm font-semibold uppercase tracking-widest text-brand-muted">Explore</h4>
