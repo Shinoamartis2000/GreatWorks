@@ -665,6 +665,16 @@ const Admin = () => {
                 </button>
               </div>
             </form>
+            <button
+              onClick={async () => {
+                await api.post("/reports/generate", new FormData());
+                fetchAll();
+              }}
+              className="mt-4 rounded-full border border-brand-forest/30 px-4 py-2 text-sm text-brand-forest"
+              data-testid="admin-generate-report"
+            >
+              Generate analytics report
+            </button>
             <div className="mt-6 grid gap-4">
               {annualReports.map((report) => (
                 <div key={report.id} className="rounded-xl bg-white/70 p-4" data-testid={`admin-report-${report.id}`}>
