@@ -40,7 +40,8 @@ const Footer = () => {
           <p className="mt-3 text-sm text-brand-muted">
             Rebuilding Lives for the Future. Transparent, urgent, and hopeful relief.
           </p>
-          <div className="mt-4 flex items-center gap-3" data-testid="footer-social-links">
+          <p className="mt-4 text-sm text-brand-forest" data-testid="footer-social-handle">@greatworksf</p>
+          <div className="mt-3 flex items-center gap-3" data-testid="footer-social-links">
             <a href="https://facebook.com/greatworksf" target="_blank" rel="noreferrer" data-testid="footer-facebook">
               <Facebook className="h-4 w-4 text-brand-forest" />
             </a>
