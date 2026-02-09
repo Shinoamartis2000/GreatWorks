@@ -407,6 +407,100 @@ async def root():
     return {"message": "GreatWorks Foundation API"}
 
 
+@api_router.post("/auth/register")
+async def register_user(payload: UserRegisterIn):
+    existing = await db.users.find_one({"email": payload.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    user = {
+        "user_id": f"user_{uuid.uuid4().hex[:12]}",
+        "name": payload.name,
+        "email": payload.email,
+        "role": payload.role or "Volunteer",
+        "password_hash": hash_password(payload.password),
+        "auth_provider": "local",
+        "created_at": now_iso(),
+    }
+    await insert_doc(db.users, user)
+    return {"user": user}
+
+
+@api_router.post("/auth/login")
+async def login_user(payload: UserLoginIn):
+    user = await db.users.find_one({"email": payload.email}, {"_id": 0})
+    if not user or not user.get("password_hash"):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    if not verify_password(payload.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    token = create_access_token({"user_id": user["user_id"], "role": user["role"]}, timedelta(days=SESSION_DAYS))
+    return {"token": token, "user": user}
+
+
+@api_router.post("/auth/emergent/session")
+async def emergent_session(payload: EmergentSessionIn, response: Response):
+    session_response = requests.get(
+        "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+        headers={"X-Session-ID": payload.session_id},
+        timeout=10,
+    )
+    if session_response.status_code != 200:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    session_data = session_response.json()
+    user = await db.users.find_one({"email": session_data["email"]}, {"_id": 0})
+    if not user:
+        user = {
+            "user_id": f"user_{uuid.uuid4().hex[:12]}",
+            "name": session_data.get("name", ""),
+            "email": session_data.get("email", ""),
+            "picture": session_data.get("picture", ""),
+            "role": "Volunteer",
+            "auth_provider": "google",
+            "created_at": now_iso(),
+        }
+        await insert_doc(db.users, user)
+    session_token = session_data.get("session_token")
+    expires_at = datetime.now(timezone.utc) + timedelta(days=SESSION_DAYS)
+    await insert_doc(
+        db.user_sessions,
+        {
+            "user_id": user["user_id"],
+            "session_token": session_token,
+            "expires_at": expires_at.isoformat(),
+            "created_at": now_iso(),
+        },
+    )
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=SESSION_DAYS * 24 * 60 * 60,
+    )
+    return {"user": user}
+
+
+@api_router.get("/auth/me")
+async def auth_me(user: Dict[str, Any] = Depends(get_current_user)):
+    return user
+
+
+@api_router.post("/auth/logout")
+async def logout_user(request: Request, response: Response):
+    session_token = request.cookies.get("session_token")
+    if session_token:
+        await db.user_sessions.delete_one({"session_token": session_token})
+    response.delete_cookie("session_token")
+    return {"status": "logged_out"}
+
+
+@api_router.put("/auth/users/{user_id}/role")
+async def update_user_role(user_id: str, payload: UserRoleUpdateIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    await db.users.update_one({"user_id": user_id}, {"$set": {"role": payload.role}})
+    return await db.users.find_one({"user_id": user_id}, {"_id": 0})
+
+
 @api_router.get("/settings")
 async def get_settings():
     return await get_settings_doc()
