@@ -7,7 +7,7 @@ import { api, buildFileUrl } from "@/lib/api";
 
 const RichTextEditor = ({ value, onChange, dataTestId }) => {
   const editor = useEditor({
-    extensions: [StarterKit, Image, Link],
+    extensions: [StarterKit.configure({ link: false }), Image, Link],
     content: value || "",
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
