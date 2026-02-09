@@ -647,6 +647,12 @@ async def update_page(
     return await db.pages.find_one({"id": page_id}, {"_id": 0})
 
 
+@api_router.delete("/pages/{page_id}")
+async def delete_page(page_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin", "Editor"]))):
+    await db.pages.delete_one({"id": page_id})
+    return {"status": "deleted"}
+
+
 @api_router.post("/media/upload")
 async def upload_media(
     files: List[UploadFile] = File(...),
