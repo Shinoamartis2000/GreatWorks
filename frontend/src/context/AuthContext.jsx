@@ -33,9 +33,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const registerWithJWT = async (payload) => {
-    const { data } = await api.post("/auth/register", payload);
-    setUser(data.user);
-    setStatus(true);
+    await api.post("/auth/register", payload);
+    await loginWithJWT(payload.email, payload.password);
   };
 
   const logout = async () => {
