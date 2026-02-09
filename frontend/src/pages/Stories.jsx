@@ -35,7 +35,7 @@ const Stories = () => {
               key={item}
               onClick={() => setCategory(item)}
               className={`rounded-full px-4 py-2 text-sm ${category === item ? "bg-brand-forest text-white" : "border border-brand-forest/20 text-brand-forest"}`}
-              data-testid={`stories-category-${item.toLowerCase()}`}
+              data-testid={`stories-category-${item.toLowerCase().replace(/\s/g, "-")}`}
             >
               {item}
             </button>
