@@ -43,9 +43,11 @@ const StoryDetail = () => {
         {story.cover_image && (
           <img src={story.cover_image} alt={story.title} className="mt-8 h-72 w-full rounded-2xl object-cover" />
         )}
-        <p className="mt-8 text-lg text-brand-muted" data-testid="story-content">
-          {story.content}
-        </p>
+        <div
+          className="prose mt-8 max-w-none text-brand-muted"
+          data-testid="story-content"
+          dangerouslySetInnerHTML={{ __html: story.content }}
+        />
         <div className="mt-8 flex flex-wrap gap-3">
           <button
             onClick={() => {
