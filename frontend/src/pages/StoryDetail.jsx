@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
@@ -22,7 +23,13 @@ const StoryDetail = () => {
   }
 
   return (
-    <div className="section-gradient" data-testid="story-detail-page">
+    <motion.div
+      className="section-gradient"
+      data-testid="story-detail-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <section className="mx-auto max-w-3xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted" data-testid="story-category">
           {story.category}
@@ -70,7 +77,7 @@ const StoryDetail = () => {
           </a>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
