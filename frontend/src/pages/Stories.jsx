@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { api } from "@/lib/api";
 import StoryCard from "@/components/StoryCard";
 
@@ -18,7 +19,13 @@ const Stories = () => {
   const filtered = posts.filter((post) => category === "All" || post.category === category);
 
   return (
-    <div className="section-gradient" data-testid="stories-page">
+    <motion.div
+      className="section-gradient"
+      data-testid="stories-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Success Stories</p>
         <h1 className="mt-3 font-serif text-4xl text-brand-forest">Stories from the field</h1>
@@ -40,7 +47,7 @@ const Stories = () => {
           ))}
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
