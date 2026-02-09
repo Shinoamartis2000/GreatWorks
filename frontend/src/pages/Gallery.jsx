@@ -40,7 +40,7 @@ const Gallery = () => {
     >
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Impact Gallery</p>
-        <h1 className="mt-3 font-serif text-4xl text-brand-forest">87+ moments of progress</h1>
+        <h1 className="mt-3 font-serif text-4xl text-brand-forest">Urban Scholarship + Valentine Outreach in focus</h1>
         <div className="mt-6 flex flex-wrap gap-3">
           {["All", "Urban Scholarship", "Valentine Outreach", "Community Relief"].map((item) => (
             <button
