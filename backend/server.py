@@ -54,6 +54,12 @@ def auto_tags(filename: str) -> List[str]:
     return list(dict.fromkeys(parts))[:8]
 
 
+async def insert_doc(collection, doc: Dict[str, Any]) -> Dict[str, Any]:
+    await collection.insert_one({**doc})
+    doc.pop("_id", None)
+    return doc
+
+
 async def get_settings_doc() -> Dict[str, Any]:
     doc = await db.settings.find_one({"key": "site"}, {"_id": 0})
     if not doc:
@@ -371,7 +377,7 @@ async def create_post(payload: BlogPostIn, background_tasks: BackgroundTasks):
             "revisions": [],
         }
     )
-    await db.posts.insert_one(doc)
+    await insert_doc(db.posts, doc)
     background_tasks.add_task(trigger_webhooks, "post.created", doc)
     return doc
 
@@ -416,7 +422,7 @@ async def delete_post(post_id: str):
 async def create_page(payload: PageContentIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "version": 1, "revisions": [], "updated_at": now_iso()})
-    await db.pages.insert_one(doc)
+    await insert_doc(db.pages, doc)
     return doc
 
 
@@ -492,7 +498,7 @@ async def upload_media(files: List[UploadFile] = File(...), program_type: str = 
             "size": len(content),
             "created_at": now_iso(),
         }
-        await db.media.insert_one(doc)
+        await insert_doc(db.media, doc)
         saved_items.append({"status": "uploaded", "item": doc})
     return {"items": saved_items}
 
@@ -532,7 +538,7 @@ async def create_event(payload: EventIn, background_tasks: BackgroundTasks):
             "status": "scheduled",
         }
     )
-    await db.events.insert_one(doc)
+    await insert_doc(db.events, doc)
     background_tasks.add_task(trigger_webhooks, "event.created", doc)
     return doc
 
@@ -575,7 +581,7 @@ async def register_event(event_id: str, payload: RegistrationIn, background_task
             "created_at": now_iso(),
         }
     )
-    await db.registrations.insert_one(doc)
+    await insert_doc(db.registrations, doc)
     if status == "registered":
         await db.events.update_one({"id": event_id}, {"$inc": {"registration_count": 1}})
     else:
@@ -599,7 +605,7 @@ async def register_event(event_id: str, payload: RegistrationIn, background_task
 async def add_feedback(event_id: str, payload: FeedbackIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "event_id": event_id, "created_at": now_iso()})
-    await db.feedback.insert_one(doc)
+    await insert_doc(db.feedback, doc)
     return {"status": "received"}
 
 
@@ -667,7 +673,7 @@ async def create_volunteer(
         "background_check_status": "pending",
         "created_at": now_iso(),
     }
-    await db.volunteers.insert_one(doc)
+    await insert_doc(db.volunteers, doc)
     return {"status": "submitted"}
 
 
@@ -692,7 +698,7 @@ async def log_hours(volunteer_id: str, hours: float = Form(...)):
 async def create_donor(payload: DonorIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso(), "total_donated": 0})
-    await db.donors.insert_one(doc)
+    await insert_doc(db.donors, doc)
     return doc
 
 
@@ -714,7 +720,7 @@ async def create_donation(payload: DonationIn, background_tasks: BackgroundTasks
             "created_at": now_iso(),
             "total_donated": 0,
         }
-        await db.donors.insert_one(donor)
+        await insert_doc(db.donors, donor)
     donation_doc = payload.model_dump()
     donation_doc.update(
         {
@@ -724,7 +730,7 @@ async def create_donation(payload: DonationIn, background_tasks: BackgroundTasks
             "status": "received",
         }
     )
-    await db.donations.insert_one(donation_doc)
+    await insert_doc(db.donations, donation_doc)
     await db.donors.update_one({"id": donor["id"]}, {"$inc": {"total_donated": payload.amount}})
     await db.goals.update_many({}, {"$inc": {"current_amount": payload.amount}})
     background_tasks.add_task(
@@ -772,7 +778,7 @@ async def donation_receipt(donation_id: str):
 async def create_goal(payload: DonationGoalIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "current_amount": 0, "created_at": now_iso()})
-    await db.goals.insert_one(doc)
+    await insert_doc(db.goals, doc)
     return doc
 
 
@@ -785,7 +791,7 @@ async def list_goals():
 async def create_impact_update(payload: ImpactUpdateIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
-    await db.impact_updates.insert_one(doc)
+    await insert_doc(db.impact_updates, doc)
     return doc
 
 
@@ -810,7 +816,7 @@ async def list_integrations():
 async def create_webhook(payload: WebhookIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
-    await db.webhooks.insert_one(doc)
+    await insert_doc(db.webhooks, doc)
     return doc
 
 
@@ -823,7 +829,7 @@ async def list_webhooks():
 async def create_social_post(payload: SocialPostIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "status": "queued", "created_at": now_iso()})
-    await db.social_posts.insert_one(doc)
+    await insert_doc(db.social_posts, doc)
     return doc
 
 
@@ -836,7 +842,7 @@ async def list_social_posts():
 async def create_program(payload: ProgramIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4())})
-    await db.programs.insert_one(doc)
+    await insert_doc(db.programs, doc)
     return doc
 
 
@@ -849,7 +855,7 @@ async def list_programs():
 async def create_partner(payload: PartnerIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4())})
-    await db.partners.insert_one(doc)
+    await insert_doc(db.partners, doc)
     return doc
 
 
@@ -862,7 +868,7 @@ async def list_partners():
 async def create_gallery_collection(payload: GalleryCollectionIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
-    await db.gallery_collections.insert_one(doc)
+    await insert_doc(db.gallery_collections, doc)
     return doc
 
 
@@ -875,7 +881,7 @@ async def list_gallery_collections():
 async def create_staff_user(payload: StaffUserIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
-    await db.staff_users.insert_one(doc)
+    await insert_doc(db.staff_users, doc)
     return doc
 
 
@@ -898,7 +904,7 @@ async def upload_annual_report(title: str = Form(...), year: str = Form(...), fi
         "file_url": f"/uploads/reports/{filename}",
         "created_at": now_iso(),
     }
-    await db.reports_library.insert_one(doc)
+    await insert_doc(db.reports_library, doc)
     return doc
 
 
@@ -926,7 +932,7 @@ async def list_annual_reports():
         "file_url": f"/uploads/reports/{filename}",
         "created_at": now_iso(),
     }
-    await db.reports_library.insert_one(doc)
+    await insert_doc(db.reports_library, doc)
     return [doc]
 
 
@@ -934,7 +940,7 @@ async def list_annual_reports():
 async def track_event(payload: AnalyticsEventIn):
     doc = payload.model_dump()
     doc.update({"id": str(uuid.uuid4()), "created_at": now_iso()})
-    await db.analytics_events.insert_one(doc)
+    await insert_doc(db.analytics_events, doc)
     return {"status": "tracked"}
 
 
@@ -961,7 +967,7 @@ async def generate_report(period: str = Form("monthly")):
         "generated_at": now_iso(),
         "data": summary,
     }
-    await db.reports.insert_one(report_doc)
+    await insert_doc(db.reports, report_doc)
     return report_doc
 
 
