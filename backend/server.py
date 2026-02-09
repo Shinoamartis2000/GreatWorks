@@ -13,6 +13,7 @@ from passlib.context import CryptContext
 from fpdf import FPDF
 import pandas as pd
 import hashlib
+import re
 import jwt
 import uuid
 import io
