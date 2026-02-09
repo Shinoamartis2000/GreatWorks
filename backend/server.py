@@ -1075,6 +1075,12 @@ async def donation_receipt(donation_id: str):
 
 @api_router.post("/goals")
 async def create_goal(payload: DonationGoalIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    doc = payload.model_dump()
+    doc.update({"id": str(uuid.uuid4()), "current_amount": 0, "created_at": now_iso()})
+    await insert_doc(db.goals, doc)
+    return doc
+
+
 @api_router.put("/goals/{goal_id}")
 async def update_goal(goal_id: str, payload: DonationGoalIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     await db.goals.update_one({"id": goal_id}, {"$set": payload.model_dump()})
