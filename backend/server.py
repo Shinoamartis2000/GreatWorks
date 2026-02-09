@@ -237,6 +237,26 @@ class NewsletterSignup(BaseModel):
     email: EmailStr
 
 
+class UserRegisterIn(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+    role: Optional[str] = "Volunteer"
+
+
+class UserLoginIn(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class EmergentSessionIn(BaseModel):
+    session_id: str
+
+
+class UserRoleUpdateIn(BaseModel):
+    role: str
+
+
 class ContactInquiryIn(BaseModel):
     name: str
     email: EmailStr
