@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 
@@ -6,6 +7,7 @@ const Login = () => {
   const { loginWithJWT, registerWithJWT, loginWithGoogle } = useAuth();
   const [mode, setMode] = useState("login");
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "Volunteer" });
+  const navigate = useNavigate();
 
   const submitForm = async (event) => {
     event.preventDefault();
@@ -14,6 +16,7 @@ const Login = () => {
     } else {
       await registerWithJWT(form);
     }
+    navigate("/admin");
   };
 
   return (
