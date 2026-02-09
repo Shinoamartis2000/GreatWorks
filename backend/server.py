@@ -39,6 +39,11 @@ api_router = APIRouter(prefix="/api")
 
 app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
+JWT_SECRET = os.environ.get("JWT_SECRET", "change-me")
+JWT_ALGORITHM = "HS256"
+SESSION_DAYS = 7
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
