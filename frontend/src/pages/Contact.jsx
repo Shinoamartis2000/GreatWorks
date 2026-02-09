@@ -10,6 +10,12 @@ const Contact = () => {
 
   const submitForm = async (event) => {
     event.preventDefault();
+    const validationErrors = {};
+    if (!form.name) validationErrors.name = "Name is required";
+    if (!form.email) validationErrors.email = "Email is required";
+    if (!form.message) validationErrors.message = "Message is required";
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length) return;
     await api.post("/contact", { ...form, topic: "General" });
     toast.success("Message sent!");
     setForm({ name: "", email: "", phone: "", message: "" });
