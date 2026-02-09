@@ -116,8 +116,8 @@ class NGOAPITester:
         """Test volunteer management endpoints"""
         print("\n=== Testing Volunteer Endpoints ===")
         
-        # Test volunteers
-        self.run_test("List Volunteers", "GET", "volunteers", 200)
+        # Test volunteers (requires auth)
+        self.run_test("List Volunteers", "GET", "volunteers", 200, auth_required=True)
 
     def test_donation_endpoints(self):
         """Test donation management endpoints"""
