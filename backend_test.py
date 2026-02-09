@@ -14,10 +14,14 @@ class NGOAPITester:
         self.failed_tests = []
         self.auth_token = None
 
-    def run_test(self, name, method, endpoint, expected_status, data=None, files=None):
+    def run_test(self, name, method, endpoint, expected_status, data=None, files=None, auth_required=False):
         """Run a single API test"""
         url = f"{self.base_url}/api/{endpoint}"
         headers = {'Content-Type': 'application/json'} if not files else {}
+        
+        # Add auth token if required and available
+        if auth_required and self.auth_token:
+            headers['Authorization'] = f'Bearer {self.auth_token}'
 
         self.tests_run += 1
         print(f"\n🔍 Testing {name}...")
@@ -28,7 +32,10 @@ class NGOAPITester:
                 response = requests.get(url, headers=headers, timeout=10)
             elif method == 'POST':
                 if files:
-                    response = requests.post(url, data=data, files=files, timeout=10)
+                    # Remove Content-Type for multipart
+                    if 'Content-Type' in headers:
+                        del headers['Content-Type']
+                    response = requests.post(url, data=data, files=files, headers=headers, timeout=10)
                 else:
                     response = requests.post(url, json=data, headers=headers, timeout=10)
             elif method == 'PUT':
