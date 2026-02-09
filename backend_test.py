@@ -242,6 +242,132 @@ class NGOAPITester:
                 'error': str(e)
             })
 
+    def test_authentication(self):
+        """Test authentication endpoints"""
+        print("\n=== Testing Authentication ===")
+        
+        # Test login with provided credentials
+        login_data = {
+            "email": "admin@greatworksf.org",
+            "password": "pass1234"
+        }
+        success, response = self.run_test("Admin Login", "POST", "auth/login", 200, login_data)
+        
+        if success and 'token' in response:
+            self.auth_token = response['token']
+            print(f"   🔑 Auth token obtained: {self.auth_token[:20]}...")
+            
+            # Test auth/me endpoint
+            self.run_test("Get Current User", "GET", "auth/me", 200, auth_required=True)
+        else:
+            print("   ⚠️  Could not obtain auth token, admin tests will fail")
+
+    def test_admin_crud_operations(self):
+        """Test admin CRUD operations"""
+        print("\n=== Testing Admin CRUD Operations ===")
+        
+        if not self.auth_token:
+            print("   ⚠️  Skipping admin tests - no auth token")
+            return
+            
+        # Test post creation
+        post_data = {
+            "title": "Test Blog Post",
+            "content": "<p>This is a test blog post with <strong>WYSIWYG</strong> content.</p>",
+            "status": "draft",
+            "category": "Urban Scholarship",
+            "program_type": "Urban Scholarship"
+        }
+        success, post_response = self.run_test("Create Post", "POST", "posts", 200, post_data, auth_required=True)
+        
+        if success and 'id' in post_response:
+            post_id = post_response['id']
+            
+            # Test post update
+            updated_post_data = {
+                "title": "Updated Test Blog Post",
+                "content": "<p>This is an updated test blog post.</p>",
+                "status": "published",
+                "category": "Urban Scholarship",
+                "program_type": "Urban Scholarship"
+            }
+            self.run_test("Update Post", "PUT", f"posts/{post_id}", 200, updated_post_data, auth_required=True)
+            
+            # Test post deletion
+            self.run_test("Delete Post", "DELETE", f"posts/{post_id}", 200, auth_required=True)
+        
+        # Test page creation
+        page_data = {
+            "slug": "test-page",
+            "title": "Test Page",
+            "content": "<p>This is a test page content.</p>",
+            "status": "draft"
+        }
+        success, page_response = self.run_test("Create Page", "POST", "pages", 200, page_data, auth_required=True)
+        
+        if success and 'id' in page_response:
+            page_id = page_response['id']
+            
+            # Test page update
+            updated_page_data = {
+                "slug": "updated-test-page",
+                "title": "Updated Test Page",
+                "content": "<p>This is updated page content.</p>",
+                "status": "published"
+            }
+            self.run_test("Update Page", "PUT", f"pages/{page_id}", 200, updated_page_data, auth_required=True)
+            
+            # Test page deletion
+            self.run_test("Delete Page", "DELETE", f"pages/{page_id}", 200, auth_required=True)
+        
+        # Test event creation
+        event_data = {
+            "title": "Test Event",
+            "description": "This is a test event description",
+            "start_datetime": "2024-12-31T10:00:00",
+            "end_datetime": "2024-12-31T12:00:00",
+            "location": "Test Location",
+            "capacity": 50
+        }
+        success, event_response = self.run_test("Create Event", "POST", "events", 200, event_data, auth_required=True)
+        
+        if success and 'id' in event_response:
+            event_id = event_response['id']
+            
+            # Test event update
+            updated_event_data = {
+                "title": "Updated Test Event",
+                "description": "Updated event description",
+                "start_datetime": "2024-12-31T14:00:00",
+                "end_datetime": "2024-12-31T16:00:00",
+                "location": "Updated Location",
+                "capacity": 100
+            }
+            self.run_test("Update Event", "PUT", f"events/{event_id}", 200, updated_event_data, auth_required=True)
+            
+            # Test event deletion
+            self.run_test("Delete Event", "DELETE", f"events/{event_id}", 200, auth_required=True)
+        
+        # Test goal creation
+        goal_data = {
+            "title": "Test Goal 2024",
+            "target_amount": 10000
+        }
+        success, goal_response = self.run_test("Create Goal", "POST", "goals", 200, goal_data, auth_required=True)
+        
+        if success and 'id' in goal_response:
+            goal_id = goal_response['id']
+            
+            # Test goal update
+            updated_goal_data = {
+                "title": "Updated Test Goal 2024",
+                "target_amount": 15000
+            }
+            self.run_test("Update Goal", "PUT", f"goals/{goal_id}", 200, updated_goal_data, auth_required=True)
+            
+            # Test goal deletion
+            self.run_test("Delete Goal", "DELETE", f"goals/{goal_id}", 200, auth_required=True)
+
     def run_all_tests(self):
         """Run all test suites"""
         print("🚀 Starting NGO API Testing...")
