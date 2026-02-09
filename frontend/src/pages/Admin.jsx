@@ -553,6 +553,16 @@ const Admin = () => {
                 <div key={donor.id} className="rounded-xl bg-white/70 p-4" data-testid={`admin-donor-${donor.id}`}>
                   <p className="font-semibold text-brand-forest">{donor.name}</p>
                   <p className="text-xs text-brand-muted">Total: ${donor.total_donated}</p>
+                  <button
+                    onClick={async () => {
+                      await api.delete(`/donors/${donor.id}`);
+                      fetchAll();
+                    }}
+                    className="mt-2 rounded-full border border-brand-red/40 px-3 py-1 text-xs text-brand-red"
+                    data-testid={`admin-donor-delete-${donor.id}`}
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
               {donations.map((donation) => (
