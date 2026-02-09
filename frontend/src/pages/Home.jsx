@@ -36,36 +36,42 @@ const Home = () => {
   }, [events]);
 
   return (
-    <div className="hero-pattern">
+    <motion.div
+      className="hero-pattern"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <section className="relative overflow-hidden" data-testid="home-hero-section">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/assets/Great works/WhatsApp Image 23.jpeg')" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-forest/40 to-brand-forest/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-brand-forest/50 to-brand-slate/90" />
         <div className="relative mx-auto flex max-w-7xl flex-col gap-10 px-6 py-24 text-white md:px-12 md:py-32">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <p className="text-sm uppercase tracking-[0.3em] text-white/80" data-testid="home-hero-tag">
               GreatWorks Foundation
             </p>
             <h1 className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight md:text-6xl" data-testid="home-hero-title">
-              Rebuilding lives today so communities thrive tomorrow.
+              Empowering Enugu youth and uplifting widows through bold community care.
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-white/90" data-testid="home-hero-subtitle">
-              We restore water systems, rebuild schools, and provide shelter for families recovering from crisis.
+              Our Urban Scholarship Program and Valentine Outreach 2022 bring education, dignity, and relief to families
+              across Enugu.
             </p>
           </motion.div>
           <div className="flex flex-wrap gap-4">
             <Link
               to="/donate"
-              className="rounded-full bg-white px-8 py-4 text-sm font-semibold text-brand-forest shadow-lg"
+              className="rounded-full bg-white px-8 py-4 text-sm font-semibold text-brand-forest shadow-lg transition hover:-translate-y-0.5"
               data-testid="home-hero-donate"
             >
               Donate Now
             </Link>
             <a
               href={settings.gofundme_url || "#"}
-              className="rounded-full border border-white/60 px-8 py-4 text-sm font-semibold text-white"
+              className="rounded-full border border-white/60 px-8 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
               data-testid="home-hero-gofundme"
             >
               GoFundMe Campaign
@@ -81,7 +87,7 @@ const Home = () => {
         <div className="mx-auto grid max-w-7xl gap-12 px-6 md:px-12">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-brand-muted">Core Programs</p>
-            <h2 className="mt-3 font-serif text-3xl text-brand-forest">Where your giving creates change</h2>
+            <h2 className="mt-3 font-serif text-3xl text-brand-forest">Where your giving fuels Enugu programs</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {programs.map((program, index) => (
@@ -89,7 +95,7 @@ const Home = () => {
                 <img src={program.image || "/assets/Great works/WhatsApp Image 24.jpeg"} alt={program.name} className="h-40 w-full rounded-xl object-cover" />
                 <h3 className="mt-4 font-serif text-xl text-brand-forest">{program.name}</h3>
                 <p className="mt-2 text-sm text-brand-muted">{program.description}</p>
-                <p className="mt-4 text-sm font-semibold text-brand-forest" data-testid={`program-impact-${index}`}>
+                <p className="mt-4 text-sm font-semibold text-brand-purple" data-testid={`program-impact-${index}`}>
                   {program.impact}
                 </p>
               </div>
@@ -169,7 +175,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
