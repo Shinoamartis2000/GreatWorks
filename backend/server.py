@@ -1091,10 +1091,6 @@ async def update_goal(goal_id: str, payload: DonationGoalIn, user: Dict[str, Any
 async def delete_goal(goal_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     await db.goals.delete_one({"id": goal_id})
     return {"status": "deleted"}
-    doc = payload.model_dump()
-    doc.update({"id": str(uuid.uuid4()), "current_amount": 0, "created_at": now_iso()})
-    await insert_doc(db.goals, doc)
-    return doc
 
 
 @api_router.get("/goals")
