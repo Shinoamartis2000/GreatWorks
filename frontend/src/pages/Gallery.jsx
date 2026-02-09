@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { api, buildFileUrl } from "@/lib/api";
 import { localGallery, localVideos } from "@/data/siteData";
 
@@ -30,12 +31,18 @@ const Gallery = () => {
   const videos = localVideos.filter((item) => program === "All" || item.programType === program);
 
   return (
-    <div className="section-gradient" data-testid="gallery-page">
+    <motion.div
+      className="section-gradient"
+      data-testid="gallery-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Impact Gallery</p>
         <h1 className="mt-3 font-serif text-4xl text-brand-forest">87+ moments of progress</h1>
         <div className="mt-6 flex flex-wrap gap-3">
-          {["All", "Water", "Education", "Shelter", "Relief"].map((item) => (
+          {["All", "Urban Scholarship", "Valentine Outreach", "Community Relief"].map((item) => (
             <button
               key={item}
               onClick={() => setProgram(item)}
@@ -48,8 +55,13 @@ const Gallery = () => {
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {filtered.map((item) => (
-            <div key={item.id} className="overflow-hidden rounded-2xl bg-white/70 shadow-sm">
-              <img src={item.src} alt={item.label} className="h-56 w-full object-cover" data-testid={`gallery-item-${item.id}`} />
+            <div key={item.id} className="group overflow-hidden rounded-2xl bg-white/70 shadow-sm">
+              <img
+                src={item.src}
+                alt={item.label}
+                className="h-56 w-full object-cover transition duration-300 group-hover:scale-105"
+                data-testid={`gallery-item-${item.id}`}
+              />
               <div className="p-4">
                 <p className="text-xs uppercase tracking-widest text-brand-muted">{item.programType}</p>
                 <p className="mt-2 text-sm text-brand-muted">{item.label}</p>
@@ -73,7 +85,7 @@ const Gallery = () => {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
