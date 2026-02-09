@@ -3,6 +3,7 @@ import "react-day-picker/dist/style.css";
 import { DayPicker } from "react-day-picker";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { motion } from "framer-motion";
 
 const GetInvolved = () => {
   const [events, setEvents] = useState([]);
@@ -10,6 +11,7 @@ const GetInvolved = () => {
   const [view, setView] = useState("month");
   const [volunteerForm, setVolunteerForm] = useState({ name: "", email: "", phone: "", skills: "", availability: "", motivation: "" });
   const [resumeFile, setResumeFile] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -32,6 +34,11 @@ const GetInvolved = () => {
 
   const submitVolunteer = async (event) => {
     event.preventDefault();
+    const validationErrors = {};
+    if (!volunteerForm.name) validationErrors.name = "Name is required";
+    if (!volunteerForm.email) validationErrors.email = "Email is required";
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length) return;
     if (!navigator.onLine) {
       localStorage.setItem("volunteerDraft", JSON.stringify(volunteerForm));
       toast.message("You are offline. We saved your application for later.");
@@ -53,15 +60,15 @@ const GetInvolved = () => {
   };
 
   return (
-    <div className="section-gradient" data-testid="get-involved-page">
+    <motion.div className="section-gradient" data-testid="get-involved-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
       <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
         <p className="text-xs uppercase tracking-widest text-brand-muted">Get Involved</p>
         <h1 className="mt-3 font-serif text-4xl text-brand-forest">Volunteer. Partner. Advocate.</h1>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {[
-            { title: "Volunteer", text: "Join deployments, mentor youth, and lead recovery teams." },
-            { title: "Partner", text: "Corporate and NGO partners expand our reach." },
-            { title: "Advocate", text: "Share stories and raise awareness in your community." },
+            { title: "Volunteer", text: "Support Enugu scholarship students and outreach teams." },
+            { title: "Partner", text: "Fund scholarships and outreach care packs." },
+            { title: "Advocate", text: "Share Urban Scholarship and Valentine Outreach updates." },
           ].map((item, index) => (
             <div key={item.title} className="rounded-2xl bg-white/70 p-6 shadow-sm" data-testid={`involved-option-${index}`}>
               <h3 className="font-serif text-xl text-brand-forest">{item.title}</h3>
@@ -83,6 +90,7 @@ const GetInvolved = () => {
               onChange={(event) => setVolunteerForm({ ...volunteerForm, name: event.target.value })}
               data-testid="volunteer-name-input"
             />
+            {errors.name && <p className="text-xs text-brand-red">{errors.name}</p>}
             <input
               type="email"
               placeholder="Email"
@@ -91,6 +99,7 @@ const GetInvolved = () => {
               onChange={(event) => setVolunteerForm({ ...volunteerForm, email: event.target.value })}
               data-testid="volunteer-email-input"
             />
+            {errors.email && <p className="text-xs text-brand-red">{errors.email}</p>}
             <input
               type="text"
               placeholder="Phone"
@@ -131,7 +140,7 @@ const GetInvolved = () => {
             />
             <button
               type="submit"
-              className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white"
+              className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
               data-testid="volunteer-submit-button"
             >
               Submit application
@@ -175,7 +184,7 @@ const GetInvolved = () => {
           </div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 
