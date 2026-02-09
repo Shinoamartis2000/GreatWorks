@@ -563,6 +563,11 @@ async def create_post(payload: BlogPostIn, background_tasks: BackgroundTasks):
 
 @api_router.get("/posts")
 async def list_posts(status: Optional[str] = None):
+    now_value = now_iso()
+    await db.posts.update_many(
+        {"status": "scheduled", "scheduled_for": {"$lte": now_value}},
+        {"$set": {"status": "published", "published_at": now_value}},
+    )
     query: Dict[str, Any] = {}
     if status:
         query["status"] = status
