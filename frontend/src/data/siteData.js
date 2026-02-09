@@ -6,6 +6,7 @@ export const navLinks = [
   { name: "Donate", path: "/donate", testId: "nav-link-donate" },
   { name: "Get Involved", path: "/get-involved", testId: "nav-link-get-involved" },
   { name: "Contact", path: "/contact", testId: "nav-link-contact" },
+  { name: "Login", path: "/login", testId: "nav-link-login" },
   { name: "Dashboard", path: "/admin", testId: "nav-link-admin" },
 ];
 
