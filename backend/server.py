@@ -921,12 +921,14 @@ async def log_hours(
     hours: float = Form(...),
     user: Dict[str, Any] = Depends(require_roles(["Admin"])),
 ):
+    await db.volunteers.update_one({"id": volunteer_id}, {"$inc": {"hours_logged": hours}})
+    return {"status": "logged"}
+
+
 @api_router.delete("/volunteers/{volunteer_id}")
 async def delete_volunteer(volunteer_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     await db.volunteers.delete_one({"id": volunteer_id})
     return {"status": "deleted"}
-    await db.volunteers.update_one({"id": volunteer_id}, {"$inc": {"hours_logged": hours}})
-    return {"status": "logged"}
 
 
 @api_router.post("/donors")
@@ -939,6 +941,9 @@ async def create_donor(payload: DonorIn, user: Dict[str, Any] = Depends(require_
 
 @api_router.get("/donors")
 async def list_donors(user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
+    return await db.donors.find({}, {"_id": 0}).to_list(2000)
+
+
 @api_router.put("/donors/{donor_id}")
 async def update_donor(donor_id: str, payload: DonorIn, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     await db.donors.update_one({"id": donor_id}, {"$set": payload.model_dump()})
@@ -949,7 +954,6 @@ async def update_donor(donor_id: str, payload: DonorIn, user: Dict[str, Any] = D
 async def delete_donor(donor_id: str, user: Dict[str, Any] = Depends(require_roles(["Admin"]))):
     await db.donors.delete_one({"id": donor_id})
     return {"status": "deleted"}
-    return await db.donors.find({}, {"_id": 0}).to_list(2000)
 
 
 @api_router.post("/donations")
