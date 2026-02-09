@@ -83,7 +83,7 @@ def create_access_token(data: Dict[str, Any], expires_delta: timedelta) -> str:
 
 
 async def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
-    return await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    return await db.users.find_one({"user_id": user_id}, {"_id": 0, "password_hash": 0})
 
 
 async def get_current_user(request: Request) -> Dict[str, Any]:
