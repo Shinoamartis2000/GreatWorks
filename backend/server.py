@@ -1179,10 +1179,18 @@ async def list_notifications():
 
 app.include_router(api_router)
 
+allowed_origins = os.environ.get("CORS_ORIGINS", "*").split(",")
+if "*" in allowed_origins or allowed_origins == [""]:
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://ngo-greatworks.preview.emergentagent.com",
+    ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=False,
-    allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
