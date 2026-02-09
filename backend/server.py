@@ -65,7 +65,7 @@ async def get_settings_doc() -> Dict[str, Any]:
     if not doc:
         doc = {
             "key": "site",
-            "gofundme_url": "",
+            "gofundme_url": "https://gofundme.com",
             "social_handle": "@greatworksf",
             "tagline": "Rebuilding Lives for the Future",
             "language": "EN",
