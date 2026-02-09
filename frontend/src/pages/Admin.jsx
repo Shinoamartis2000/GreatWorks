@@ -32,39 +32,47 @@ const Admin = () => {
   const [editingEventId, setEditingEventId] = useState(null);
   const [editingGoalId, setEditingGoalId] = useState(null);
 
+  const isAdmin = user?.role === "Admin";
+
   const fetchAll = async () => {
-    const [summaryRes, postsRes, pagesRes, mediaRes, eventsRes, volunteersRes, donorsRes, donationsRes, goalsRes, settingsRes, reportsRes, annualRes] =
-      await Promise.all([
-        api.get("/analytics/summary"),
-        api.get("/posts"),
-        api.get("/pages"),
-        api.get("/media"),
-        api.get("/events"),
-        api.get("/volunteers"),
-        api.get("/donors"),
-        api.get("/donations"),
-        api.get("/goals"),
-        api.get("/settings"),
-        api.get("/reports"),
-        api.get("/annual-reports"),
-      ]);
+    const baseRequests = [
+      api.get("/analytics/summary"),
+      api.get("/posts"),
+      api.get("/pages"),
+      api.get("/media"),
+      api.get("/events"),
+      api.get("/settings"),
+    ];
+    const adminRequests = [
+      api.get("/volunteers"),
+      api.get("/donors"),
+      api.get("/donations"),
+      api.get("/goals"),
+      api.get("/reports"),
+      api.get("/annual-reports"),
+    ];
+    const responses = await Promise.all(isAdmin ? baseRequests.concat(adminRequests) : baseRequests);
+    const [summaryRes, postsRes, pagesRes, mediaRes, eventsRes, settingsRes, ...adminRes] = responses;
     setSummary(summaryRes.data || {});
     setPosts(postsRes.data || []);
     setPages(pagesRes.data || []);
     setMedia(mediaRes.data || []);
     setEvents(eventsRes.data || []);
-    setVolunteers(volunteersRes.data || []);
-    setDonors(donorsRes.data || []);
-    setDonations(donationsRes.data || []);
-    setGoals(goalsRes.data || []);
     setSettings(settingsRes.data || settings);
-    setReports(reportsRes.data || []);
-    setAnnualReports(annualRes.data || []);
+    if (isAdmin) {
+      const [volunteersRes, donorsRes, donationsRes, goalsRes, reportsRes, annualRes] = adminRes;
+      setVolunteers(volunteersRes.data || []);
+      setDonors(donorsRes.data || []);
+      setDonations(donationsRes.data || []);
+      setGoals(goalsRes.data || []);
+      setReports(reportsRes.data || []);
+      setAnnualReports(annualRes.data || []);
+    }
   };
 
   useEffect(() => {
-    fetchAll();
-  }, []);
+    if (user) fetchAll();
+  }, [user]);
 
   const submitPost = async (event) => {
     event.preventDefault();
