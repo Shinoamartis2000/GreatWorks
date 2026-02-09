@@ -11,22 +11,22 @@ export const navLinks = [
 
 export const programsSeed = [
   {
-    name: "Safe Water Access",
-    impact: "45,000+ people served",
-    description: "We restore water systems, install pumps, and train local caretakers.",
-    image: "/assets/Great works/WhatsApp Image 25.jpeg",
-  },
-  {
-    name: "Education Recovery",
-    impact: "12,000+ students supported",
-    description: "Rebuild classrooms, supply learning kits, and mentor educators.",
+    name: "Urban Scholarship Program (Enugu)",
+    impact: "Scholarships + mentorship for urban youth",
+    description: "Supporting students in Enugu with tuition, mentorship, and learning resources.",
     image: "/assets/Great works/WhatsApp Image 22.jpeg",
   },
   {
-    name: "Shelter & Relief",
-    impact: "8,500+ families rehoused",
-    description: "Emergency shelter, food deliveries, and trauma-informed care.",
+    name: "Valentine Outreach 2022 (Widows & Street)",
+    impact: "Compassionate care + essentials",
+    description: "Community outreach delivering meals, care kits, and emotional support.",
     image: "/assets/Great works/WhatsApp Image 23.jpeg",
+  },
+  {
+    name: "Community Relief & Recovery",
+    impact: "Ongoing aid for families",
+    description: "Emergency relief, food support, and recovery partnerships across Enugu.",
+    image: "/assets/Great works/WhatsApp Image 25.jpeg",
   },
 ];
 
@@ -95,7 +95,7 @@ const galleryFiles = [
   "uif.jpeg",
 ];
 
-const programTypes = ["Water", "Education", "Shelter", "Relief"];
+const programTypes = ["Urban Scholarship", "Valentine Outreach", "Community Relief"];
 
 export const localGallery = galleryFiles.map((file, index) => ({
   id: `local-${index}`,
@@ -114,13 +114,13 @@ export const localVideos = [
 ];
 
 export const givingOptions = [
-  { label: "Emergency Relief", amount: 35, impact: "Provides a family with clean water for a month" },
-  { label: "Education Kit", amount: 75, impact: "Supplies a student for an entire term" },
-  { label: "Rebuild a Home", amount: 250, impact: "Rebuilds a safe shelter for a family" },
+  { label: "Scholarship Support", amount: 35, impact: "Supports student learning resources" },
+  { label: "Outreach Care Pack", amount: 75, impact: "Provides a widow with essentials" },
+  { label: "Community Relief", amount: 250, impact: "Funds a full outreach day" },
 ];
 
 export const contactMethods = [
   { label: "Email", value: "hello@greatworksfoundation.org" },
-  { label: "Phone", value: "+1 (555) 021-1942" },
+  { label: "Phone", value: "+2347035288648" },
   { label: "Address", value: "145 Hope Street, Suite 22, Austin, TX" },
 ];
