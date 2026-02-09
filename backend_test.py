@@ -123,11 +123,11 @@ class NGOAPITester:
         """Test donation management endpoints"""
         print("\n=== Testing Donation Endpoints ===")
         
-        # Test donors
-        self.run_test("List Donors", "GET", "donors", 200)
+        # Test donors (requires auth)
+        self.run_test("List Donors", "GET", "donors", 200, auth_required=True)
         
-        # Test donations
-        self.run_test("List Donations", "GET", "donations", 200)
+        # Test donations (requires auth)
+        self.run_test("List Donations", "GET", "donations", 200, auth_required=True)
         
         # Test goals
         self.run_test("List Goals", "GET", "goals", 200)
