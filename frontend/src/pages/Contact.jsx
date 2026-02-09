@@ -6,6 +6,7 @@ import { contactMethods } from "@/data/siteData";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [errors, setErrors] = useState({});
 
   const submitForm = async (event) => {
     event.preventDefault();
