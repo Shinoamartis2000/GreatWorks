@@ -31,7 +31,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-brand-forest/10 bg-[#E9E4D2]" data-testid="site-footer">
+    <footer className="border-t border-brand-forest/10 bg-[#e9eef7]" data-testid="site-footer">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-12 md:grid-cols-3 md:px-12">
         <div>
           <h3 className="font-serif text-2xl text-brand-forest" data-testid="footer-brand-title">
