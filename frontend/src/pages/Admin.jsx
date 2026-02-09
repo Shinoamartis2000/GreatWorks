@@ -464,6 +464,7 @@ const Admin = () => {
             </div>
           </TabsContent>
 
+          {isAdmin && (
           <TabsContent value="volunteers" className="mt-6">
             <div className="grid gap-4">
               {volunteers.map((volunteer) => (
@@ -499,7 +500,9 @@ const Admin = () => {
               ))}
             </div>
           </TabsContent>
+          )}
 
+          {isAdmin && (
           <TabsContent value="donors" className="mt-6">
             <form className="rounded-2xl bg-white/70 p-6" onSubmit={submitGoal}>
               <h2 className="font-serif text-2xl text-brand-forest">Donation goal</h2>
@@ -578,7 +581,9 @@ const Admin = () => {
               ))}
             </div>
           </TabsContent>
+          )}
 
+          {isAdmin && (
           <TabsContent value="integrations" className="mt-6">
             <form className="rounded-2xl bg-white/70 p-6" onSubmit={submitIntegration}>
               <h2 className="font-serif text-2xl text-brand-forest">Integration settings</h2>
@@ -608,6 +613,7 @@ const Admin = () => {
               </div>
             </form>
           </TabsContent>
+          )}
 
           <TabsContent value="settings" className="mt-6">
             <form className="rounded-2xl bg-white/70 p-6" onSubmit={updateSettings}>
@@ -644,6 +650,7 @@ const Admin = () => {
             </form>
           </TabsContent>
 
+          {isAdmin && (
           <TabsContent value="reports" className="mt-6">
             <form className="rounded-2xl bg-white/70 p-6" onSubmit={uploadReport}>
               <h2 className="font-serif text-2xl text-brand-forest">Annual report upload</h2>
@@ -717,6 +724,7 @@ const Admin = () => {
               ))}
             </div>
           </TabsContent>
+          )}
         </Tabs>
       </section>
     </div>
