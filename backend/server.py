@@ -763,8 +763,9 @@ async def donation_receipt(donation_id: str):
     pdf.cell(0, 10, f"Email: {donor.get('email', '')}", ln=1)
     pdf.cell(0, 10, f"Amount: {donation['amount']} {donation['currency']}", ln=1)
     pdf.cell(0, 10, f"Date: {donation['created_at']}", ln=1)
-    output = pdf.output(dest="S").encode("latin-1")
-    return StreamingResponse(io.BytesIO(output), media_type="application/pdf")
+    output = pdf.output(dest="S")
+    output_bytes = bytes(output) if isinstance(output, (bytearray, bytes)) else str(output).encode("latin-1")
+    return StreamingResponse(io.BytesIO(output_bytes), media_type="application/pdf")
 
 
 @api_router.post("/goals")
@@ -912,11 +913,12 @@ async def list_annual_reports():
     pdf.cell(0, 10, "GreatWorks Foundation Annual Report", ln=1)
     pdf.set_font("Helvetica", size=12)
     pdf.multi_cell(0, 8, "This is a placeholder annual report. Upload the official PDF from the admin dashboard.")
-    output = pdf.output(dest="S").encode("latin-1")
+    output = pdf.output(dest="S")
+    output_bytes = bytes(output) if isinstance(output, (bytearray, bytes)) else str(output).encode("latin-1")
     filename = f"report-{uuid.uuid4()}.pdf"
     file_path = UPLOAD_DIR / "reports" / filename
     with open(file_path, "wb") as f:
-        f.write(output)
+        f.write(output_bytes)
     doc = {
         "id": str(uuid.uuid4()),
         "title": "Annual Report",
