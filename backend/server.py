@@ -235,6 +235,42 @@ async def ensure_seed_data() -> None:
             ]
         )
 
+    if await db.events.count_documents({}) == 0:
+        await db.events.insert_many(
+            [
+                {
+                    "id": str(uuid.uuid4()),
+                    "title": "Urban Scholarship Mentorship Drive",
+                    "description": "Mentorship and scholarship briefing for Enugu students.",
+                    "start_datetime": (datetime.now(timezone.utc) + timedelta(days=10)).isoformat(),
+                    "end_datetime": (datetime.now(timezone.utc) + timedelta(days=10, hours=2)).isoformat(),
+                    "location": "Enugu City Center",
+                    "capacity": 120,
+                    "cover_image": "/assets/Great works/WhatsApp Image 22.jpeg",
+                    "recurrence": None,
+                    "registration_count": 0,
+                    "waitlist_count": 0,
+                    "status": "scheduled",
+                    "created_at": now_iso(),
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "title": "Valentine Outreach Follow-up",
+                    "description": "Community care packs and counseling for widows and street families.",
+                    "start_datetime": (datetime.now(timezone.utc) + timedelta(days=22)).isoformat(),
+                    "end_datetime": (datetime.now(timezone.utc) + timedelta(days=22, hours=3)).isoformat(),
+                    "location": "Ogui Road, Enugu",
+                    "capacity": 200,
+                    "cover_image": "/assets/Great works/WhatsApp Image 23.jpeg",
+                    "recurrence": None,
+                    "registration_count": 0,
+                    "waitlist_count": 0,
+                    "status": "scheduled",
+                    "created_at": now_iso(),
+                },
+            ]
+        )
+
 
 class NewsletterSignup(BaseModel):
     email: EmailStr
