@@ -19,12 +19,14 @@ module.exports = {
   		},
   		colors: {
                         brand: {
-                                forest: '#2F5233',
-                                terracotta: '#E07A5F',
-                                wheat: '#F2CC8F',
-                                bone: '#F4F1DE',
-                                slate: '#3D405B',
-                                muted: '#6B705C'
+                                forest: '#1a5fb4',
+                                terracotta: '#26a269',
+                                wheat: '#e5a50a',
+                                bone: '#f5f6fb',
+                                slate: '#3f2c7d',
+                                muted: '#4b5563',
+                                red: '#d72638',
+                                purple: '#7c3aed'
                         },
                         highlight: '#E9E4D2',
   			background: 'hsl(var(--background))',
