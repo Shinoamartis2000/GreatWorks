@@ -219,6 +219,25 @@ CREATE TABLE staff_users (
   created_at DATETIME
 );
 
+CREATE TABLE users (
+  user_id CHAR(36) PRIMARY KEY,
+  name VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  role VARCHAR(50),
+  password_hash TEXT,
+  auth_provider VARCHAR(50),
+  picture TEXT,
+  created_at DATETIME
+);
+
+CREATE TABLE user_sessions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id CHAR(36),
+  session_token TEXT,
+  expires_at DATETIME,
+  created_at DATETIME
+);
+
 CREATE TABLE annual_reports (
   id CHAR(36) PRIMARY KEY,
   title VARCHAR(255),
