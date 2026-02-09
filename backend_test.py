@@ -153,8 +153,8 @@ class NGOAPITester:
         # Test annual reports
         self.run_test("List Annual Reports", "GET", "annual-reports", 200)
         
-        # Test reports
-        self.run_test("List Reports", "GET", "reports", 200)
+        # Test reports (requires auth)
+        self.run_test("List Reports", "GET", "reports", 200, auth_required=True)
 
     def test_integration_endpoints(self):
         """Test integration endpoints"""
