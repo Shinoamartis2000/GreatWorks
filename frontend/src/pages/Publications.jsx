@@ -13,23 +13,17 @@ const CATEGORIES = [
 
 const Publications = () => {
   const [annualReports, setAnnualReports] = useState([]);
-  const [generatedReports, setGeneratedReports] = useState([]);
   const [category, setCategory] = useState("All");
 
   useEffect(() => {
-    const fetchData = async () => {
-      const [annualRes, reportsRes] = await Promise.all([
-        api.get("/annual-reports").catch(() => ({ data: [] })),
-        api.get("/reports").catch(() => ({ data: [] })),
-      ]);
-      setAnnualReports(annualRes.data || []);
-      setGeneratedReports(reportsRes.data || []);
-    };
-    fetchData();
+    api
+      .get("/annual-reports")
+      .then((res) => setAnnualReports(res.data || []))
+      .catch(() => setAnnualReports([]));
   }, []);
 
   const documents = useMemo(() => {
-    const annual = annualReports.map((r) => ({
+    return annualReports.map((r) => ({
       id: r.id,
       title: r.title || `Annual Report ${r.year || ""}`.trim(),
       category: "Annual Reports",
@@ -37,16 +31,7 @@ const Publications = () => {
       meta: "PDF",
       fileUrl: r.file_url,
     }));
-    const generated = generatedReports.map((r) => ({
-      id: r.id,
-      title: `${(r.period || "Analytics").charAt(0).toUpperCase() + (r.period || "analytics").slice(1)} Analytics Report`,
-      category: "Impact Reports",
-      date: r.created_at ? new Date(r.created_at).getFullYear().toString() : "",
-      meta: "Generated report",
-      fileUrl: null,
-    }));
-    return [...annual, ...generated];
-  }, [annualReports, generatedReports]);
+  }, [annualReports]);
 
   const filtered = documents.filter((d) => category === "All" || d.category === category);
 
