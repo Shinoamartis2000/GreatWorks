@@ -1375,7 +1375,7 @@ if "*" in allowed_origins or allowed_origins == [""]:
     allowed_origins = [
         "http://localhost:3000",
         "http://localhost:3001",
-        "https://ngo-greatworks.preview.emergentagent.com",
+        "https://greatworks-staging.preview.emergentagent.com",
     ]
 
 app.add_middleware(

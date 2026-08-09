@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 class NGOAPITester:
-    def __init__(self, base_url="https://ngo-greatworks.preview.emergentagent.com"):
+    def __init__(self, base_url="https://greatworks-staging.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
