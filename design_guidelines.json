@@ -1,170 +1,121 @@
 {
-  "brand_identity": {
-    "name": "GreatWorks Foundation",
-    "tagline": "Empowering Communities, Restoring Hope.",
-    "archetype": "Organic & Earthy (Trust, Growth, Calm)",
-    "tone": "Human, Urgent, Transparent, Hopeful",
-    "theme_preference": "light"
-  },
+  "theme": "light",
+  "archetype": "Swiss & High-Contrast / Institutional",
   "typography": {
-    "font_family": {
-      "headings": "Playfair Display, serif",
-      "body": "Manrope, sans-serif",
-      "mono": "JetBrains Mono, monospace"
+    "headings": {
+      "family": "Merriweather, serif",
+      "weights": ["400", "700", "900"],
+      "usage": "Strong serif for major institutional headings (H1, H2) to convey authority and legacy."
     },
-    "scale": {
-      "h1": "text-5xl md:text-7xl font-bold tracking-tight leading-[1.1]",
-      "h2": "text-4xl md:text-5xl font-semibold tracking-tight",
-      "h3": "text-2xl md:text-3xl font-medium",
-      "body_large": "text-lg md:text-xl leading-relaxed",
-      "body_base": "text-base leading-relaxed text-muted-foreground",
-      "caption": "text-sm font-medium tracking-widest uppercase text-muted-foreground"
+    "body": {
+      "family": "IBM Plex Sans, sans-serif",
+      "weights": ["400", "500", "600"],
+      "usage": "Clean, highly legible sans-serif for body text, data tables, UI controls, and utility bars."
     },
-    "rules": [
-      "Never use Inter for headings.",
-      "Use Playfair Display for all H1-H3 headings to evoke a 'Storytelling' feel.",
-      "Use Manrope for all body text and UI elements for high readability.",
-      "Headings must be tight (tracking-tight).",
-      "Captions must be wide (tracking-widest)."
-    ]
+    "scales": {
+      "h1": "text-4xl sm:text-5xl font-bold tracking-tight text-navy-900",
+      "h2": "text-3xl sm:text-4xl font-bold tracking-tight text-navy-900",
+      "h3": "text-xl sm:text-2xl font-semibold text-navy-800",
+      "body": "text-base leading-relaxed text-charcoal-700",
+      "small": "text-sm text-charcoal-600",
+      "utility": "text-xs font-medium tracking-wide uppercase text-gray-500"
+    }
   },
   "colors": {
-    "palette": {
-      "primary": {
-        "DEFAULT": "#2F5233",
-        "foreground": "#FFFFFF",
-        "description": "Deep Forest Green - Represents growth, stability, and nature."
-      },
-      "secondary": {
-        "DEFAULT": "#E07A5F",
-        "foreground": "#FFFFFF",
-        "description": "Terracotta - Represents earth, humanity, and urgent action."
-      },
-      "accent": {
-        "DEFAULT": "#F2CC8F",
-        "foreground": "#2F5233",
-        "description": "Soft Gold/Wheat - Represents hope and warmth."
-      },
-      "background": {
-        "DEFAULT": "#F4F1DE",
-        "alt": "#E9E4D2",
-        "description": "Bone/Eggshell - Organic alternative to harsh white."
-      },
-      "foreground": {
-        "DEFAULT": "#3D405B",
-        "muted": "#6B705C",
-        "description": "Charcoal/Slate - Softer than pure black."
-      },
-      "destructive": {
-        "DEFAULT": "#D62828",
-        "foreground": "#FFFFFF"
-      }
+    "primary": {
+      "name": "Institutional Blue",
+      "hex": "#1a5fb4",
+      "tailwind": "bg-[#1a5fb4]",
+      "usage": "Primary buttons, links, major active states, header accents."
     },
-    "gradients": {
-      "hero_overlay": "linear-gradient(180deg, rgba(47,82,51,0.4) 0%, rgba(47,82,51,0.8) 100%)",
-      "subtle_glow": "radial-gradient(circle at 50% 50%, rgba(242,204,143,0.15), transparent 70%)"
+    "secondary": {
+      "name": "Deep Navy",
+      "hex": "#0d2f5a",
+      "tailwind": "bg-[#0d2f5a]",
+      "usage": "Text headings, primary header background, footer background."
     },
-    "rules": [
-      "Avoid pure black (#000000). Use #3D405B.",
-      "Avoid pure white (#FFFFFF) for main backgrounds. Use #F4F1DE.",
-      "Use Primary Green for main actions (Donate).",
-      "Use Secondary Terracotta for urgent alerts or secondary CTAs (Volunteer)."
-    ]
-  },
-  "layout_strategies": {
-    "container": "max-w-7xl mx-auto px-6 md:px-12",
-    "spacing": {
-      "section_padding": "py-20 md:py-32",
-      "element_gap": "gap-8 md:gap-12"
+    "accent_green": {
+      "name": "Subtle Green Accent",
+      "hex": "#26a269",
+      "tailwind": "text-[#26a269]",
+      "usage": "Verified facts icons, success states, subtle key indicator highlights."
     },
-    "grids": {
-      "bento_impact": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[300px]",
-      "feature_list": "grid grid-cols-1 md:grid-cols-2 gap-16 items-center"
+    "accent_yellow": {
+      "name": "Alert Yellow",
+      "hex": "#e5a50a",
+      "tailwind": "ring-[#e5a50a]",
+      "usage": "Warning/alert strips, focus rings for accessibility (sometimes paired with black)."
     },
-    "glassmorphism": {
-      "header": "bg-[#F4F1DE]/80 backdrop-blur-md border-b border-[#2F5233]/10",
-      "card": "bg-white/60 backdrop-blur-sm border border-white/40 shadow-sm hover:shadow-md transition-all duration-300"
+    "neutral": {
+      "white": "#ffffff",
+      "light_grey": "#f4f5f7",
+      "border_grey": "#e2e8f0",
+      "charcoal": "#334155",
+      "dark_charcoal": "#0f172a"
     }
+  },
+  "visual_enhancers": {
+    "borders": "Solid 1px borders (#e2e8f0 or #cbd5e1) for structural separation. No soft drop shadows.",
+    "shadows": "Strictly restrained. Use shadow-sm for active cards, or pure flat borders. No large diffuse shadows.",
+    "radius": "Minimal. rounded-sm (2px) or rounded (4px) for inputs and buttons. Never pill-shaped or heavy rounded corners.",
+    "surfaces": "Flat white for content cards. Flat light grey (#f4f5f7) for background sections. NO glassmorphism. NO gradients."
   },
   "components": {
-    "buttons": {
-      "primary": "rounded-full px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300",
-      "secondary": "rounded-full px-8 py-6 text-lg font-medium border-2 border-[#2F5233] text-[#2F5233] hover:bg-[#2F5233] hover:text-white transition-all duration-300",
-      "ghost": "hover:bg-[#2F5233]/10 text-[#2F5233] font-medium"
-    },
-    "cards": {
-      "impact_story": "group relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-xl transition-all duration-500",
-      "donation_tier": "rounded-xl border-2 border-[#2F5233]/10 bg-white p-8 hover:border-[#2F5233] hover:scale-[1.02] transition-all duration-300"
-    },
-    "inputs": {
-      "style": "rounded-lg border-[#2F5233]/20 bg-white/50 focus:border-[#2F5233] focus:ring-[#2F5233]/20 h-12"
-    }
+    "utility_bar": "Top bar: Dark charcoal or deep navy background, white text. Links for 'Skip to main content', 'Accessibility', 'Languages', 'Search'. Small text (text-xs).",
+    "main_header": "White background, sticky. Contains logo with full registered name, structured nav, 'Donate' solid primary button. Bottom border 1px border-grey.",
+    "institutional_hero": "Split layout or wide container with a solid bg-white/95 text block. Authentic field photo. Contains headline, concise paragraph, two buttons (Primary solid, Secondary outline), and a 'Discreet Verified-Facts Panel' attached to bottom.",
+    "data_tables": "Striped rows (bg-white and bg-gray-50), clear column headers (font-semibold, border-b-2). Used for Projects directory, publications, transparency docs.",
+    "cards_project": "Flat card, border border-gray-200. Image top (max-h-48, object-cover), tight padding inside (p-4). Clear tags for Status, Location.",
+    "breadcrumbs": "Essential on all internal pages. text-sm text-blue-600, separated by crickets (>).",
+    "buttons": "Primary: bg-[#1a5fb4] text-white hover:bg-[#154c90] rounded-sm. Secondary: border border-[#1a5fb4] text-[#1a5fb4] bg-transparent hover:bg-gray-50 rounded-sm."
+  },
+  "layouts": {
+    "grid": "12-column grid. Standard institutional layout: max-w-7xl mx-auto, generous side padding (px-4 sm:px-6 lg:px-8).",
+    "spacing": "Sections separated by py-16 or py-24. High density within data tables, but generous breathing room between distinct sections."
   },
   "motion": {
-    "library": "framer-motion",
-    "variants": {
-      "fadeInUp": {
-        "hidden": { "opacity": 0, "y": 40 },
-        "visible": { "opacity": 1, "y": 0, "transition": { "duration": 0.8, "ease": [0.22, 1, 0.36, 1] } }
-      },
-      "staggerContainer": {
-        "hidden": { "opacity": 0 },
-        "visible": { "opacity": 1, "transition": { "staggerChildren": 0.1 } }
-      },
-      "scaleIn": {
-        "hidden": { "opacity": 0, "scale": 0.9 },
-        "visible": { "opacity": 1, "scale": 1, "transition": { "duration": 0.5 } }
-      }
+    "transitions": "Extremely subtle. Use transition-colors duration-200 ease-in-out for hovers. No scale or translate on hover unless very slight (e.g., -translate-y-[1px] on cards).",
+    "loading": "Simple fade-in or skeleton loaders.",
+    "counters": "Use a subtle number counter for 'Key Institutional Indicators' (e.g., framer-motion useSpring, but keep it brief)."
+  },
+  "accessibility": {
+    "focus": "focus:outline-none focus:ring-2 focus:ring-[#e5a50a] focus:ring-offset-2. Ensure high contrast on focus.",
+    "contrast": "Ensure text over images is NEVER transparent. Use solid color blocks or heavy overlays.",
+    "aria": "Use aria-labels for icon buttons. aria-current for active nav links. aria-hidden on purely decorative icons.",
+    "data_testid": "MANDATORY. All interactive elements (buttons, links, form inputs) must have data-testid in kebab-case."
+  },
+  "media": {
+    "handling": "Use authentic photos from /assets/Great works/. Photos should be un-filtered, factual, documentary style.",
+    "placeholders": "Do not use fake placeholder text. If missing, omit section."
+  },
+  "image_urls": {
+    "hero_fallback": {
+      "url": "https://images.unsplash.com/photo-1542315099045-93937d70c67a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwyfHxjb21tdW5pdHklMjBkZXZlbG9wbWVudHxlbnwwfHx8fDE3ODYzMDg1MzF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "people standing forming circle near house under blue sky during daytime",
+      "category": "community_development"
     },
-    "rules": [
-      "Use 'AnimatePresence' for page transitions.",
-      "Use 'LayoutGroup' for smooth layout shifts.",
-      "Scroll-triggered animations for all major sections (Impact, Stories)."
-    ]
+    "education_fallback": {
+      "url": "https://images.unsplash.com/photo-1567057420215-0afa9aa9253a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwzfHxzY2hvb2wlMjBjaGlsZHJlbiUyMGNsYXNzcm9vbXxlbnwwfHx8fDE3ODYzMDg1MzF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "children writing in books",
+      "category": "education"
+    },
+    "agriculture_fallback": {
+      "url": "https://images.unsplash.com/photo-1560493676-04071c5f467b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNTl8MHwxfHNlYXJjaHwxfHxzdXN0YWluYWJsZSUyMGFncmljdWx0dXJlJTIwZmFybXxlbnwwfHx8fDE3ODYzMDg1MzF8MA&ixlib=rb-4.1.0&q=85",
+      "description": "rows of green crops in field at sunset",
+      "category": "agriculture"
+    }
   },
-  "assets": {
-    "images": [
-      {
-        "category": "hero",
-        "url": "https://images.unsplash.com/photo-1761666507437-9fb5a6ef7b0a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHx2b2x1bnRlZXJzJTIwaGVscGluZyUyMGNvbW11bml0eXxlbnwwfHx8fDE3NzA2NTUyNzJ8MA&ixlib=rb-4.1.0&q=85",
-        "alt": "Volunteers helping community in water",
-        "usage": "Main Hero Background"
-      },
-      {
-        "category": "education",
-        "url": "https://images.unsplash.com/photo-1632215863153-0dae7657d0a9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDV8MHwxfHNlYXJjaHwxfHxhZnJpY2FuJTIwY2hpbGRyZW4lMjBzbWlsaW5nJTIwc2Nob29sJTIwY2xhc3Nyb29tfGVufDB8fHx8MTc3MDY1NTM2Mnww&ixlib=rb-4.1.0&q=85",
-        "alt": "Children in classroom Nigeria",
-        "usage": "Education Impact Card"
-      },
-      {
-        "category": "water",
-        "url": "https://images.unsplash.com/photo-1760873059715-7c7cfbe2a2c6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTB8MHwxfHNlYXJjaHwxfHxjb21tdW5pdHklMjB3YXRlciUyMHB1bXAlMjB2aWxsYWdlfGVufDB8fHx8MTc3MDY1NTM2Nnww&ixlib=rb-4.1.0&q=85",
-        "alt": "Children at water pump",
-        "usage": "Water Project Card"
-      },
-      {
-        "category": "volunteers",
-        "url": "https://images.unsplash.com/photo-1758599669406-d5179ccefcb9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHwyfHxncm91cCUyMG9mJTIwaGFwcHklMjBkaXZlcnNlJTIwdm9sdW50ZWVycyUyMG91dGRvb3JzfGVufDB8fHx8MTc3MDY1NTM3NHww&ixlib=rb-4.1.0&q=85",
-        "alt": "Diverse volunteers with trash bags",
-        "usage": "Get Involved Section"
-      },
-      {
-        "category": "fundraising",
-        "url": "https://images.unsplash.com/photo-1769867627624-ef328dbdc2a2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwxfHxjaGFyaXR5JTIwZnVuZHJhaXNpbmclMjBldmVudCUyMGNyb3dkfGVufDB8fHx8MTc3MDY1NTI4M3ww&ixlib=rb-4.1.0&q=85",
-        "alt": "Charity run event",
-        "usage": "Events Page Header"
-      }
-    ],
-    "icons": "Use Lucide React (already installed). Use thin strokes (stroke-width={1.5}) for elegance."
-  },
-  "universal_guidelines": [
-    "Do not use generic centered layouts. Use asymmetry.",
-    "Do not use 'Inter' for headings. Use 'Playfair Display'.",
-    "Do not use pure black or white. Use the defined palette.",
-    "Always add 'data-testid' to interactive elements.",
-    "Use 'sonner' for toasts.",
-    "Use 'framer-motion' for all animations.",
-    "Ensure all images have alt text for accessibility.",
-    "Forms must skip CAPTCHA as per requirements."
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Prioritize accessibility and WCAG AA compliance over pure aesthetics.",
+    "All components MUST be built as .js (JSX inside .js) and NOT .tsx files.",
+    "Do NOT use 'transition: all'. Explicitly state transitions (e.g., transition-colors, transition-opacity).",
+    "Never center align the main App container text. Align text left for maximum readability.",
+    "Use 2-3x more spacing between sections to avoid cramped design. Generous padding in containers.",
+    "Do not use dark colors as gradients. Use solid colors. Flat, structural design.",
+    "NEVER use generic emoji for icons. Use Lucide icons.",
+    "NEVER use glassmorphism or transparent overlays over text that affect readability. DO NOT use complete transparent background in header, overlays, or any surface that has content under it. Use solid color backgrounds for text legibility.",
+    "MANDATORY: ALL interactive elements must have a data-testid attribute in kebab-case (e.g., data-testid='donate-header-button').",
+    "Ensure existing local assets are mapped correctly (/assets/Great works/). Only use the Unsplash fallbacks if local files are missing or insufficient.",
+    "Use Shadcn components minimally styled. Strip out overly rounded borders and shadows to achieve a flat, governmental aesthetic."
   ]
 }
