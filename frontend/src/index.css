@@ -1,79 +1,51 @@
-@import "@fontsource/playfair-display/400.css";
-@import "@fontsource/playfair-display/600.css";
-@import "@fontsource/playfair-display/700.css";
-@import "@fontsource/manrope/300.css";
-@import "@fontsource/manrope/400.css";
-@import "@fontsource/manrope/500.css";
-@import "@fontsource/manrope/600.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
     margin: 0;
-    font-family: "Manrope", sans-serif;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    color: #334155;
+    background: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4 {
+    font-family: "Merriweather", Georgia, serif;
+}
+
 code {
-    font-family:
-        source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 @layer base {
     :root {
-        --background: 220 60% 98%;
-        --foreground: 222 30% 18%;
+        --background: 0 0% 100%;
+        --foreground: 215 40% 16%;
         --card: 0 0% 100%;
-        --card-foreground: 222 30% 18%;
+        --card-foreground: 215 40% 16%;
         --popover: 0 0% 100%;
-        --popover-foreground: 222 30% 18%;
+        --popover-foreground: 215 40% 16%;
         --primary: 214 74% 41%;
         --primary-foreground: 0 0% 100%;
-        --secondary: 149 57% 40%;
+        --secondary: 210 60% 20%;
         --secondary-foreground: 0 0% 100%;
-        --muted: 220 30% 92%;
-        --muted-foreground: 220 10% 40%;
-        --accent: 40 85% 49%;
-        --accent-foreground: 222 30% 18%;
-        --destructive: 350 70% 52%;
+        --muted: 210 20% 96%;
+        --muted-foreground: 215 16% 40%;
+        --accent: 210 20% 96%;
+        --accent-foreground: 215 40% 16%;
+        --destructive: 4 74% 41%;
         --destructive-foreground: 0 0% 100%;
-        --border: 220 18% 86%;
-        --input: 220 18% 86%;
+        --border: 214 20% 90%;
+        --input: 214 20% 90%;
         --ring: 214 74% 41%;
         --chart-1: 214 74% 41%;
-        --chart-2: 149 57% 40%;
+        --chart-2: 152 59% 30%;
         --chart-3: 40 85% 49%;
-        --chart-4: 270 59% 44%;
-        --chart-5: 350 70% 52%;
-        --radius: 0.85rem;
-    }
-    .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
+        --chart-4: 210 60% 20%;
+        --chart-5: 215 16% 40%;
+        --radius: 0.25rem;
     }
 }
 
@@ -84,49 +56,79 @@ code {
     body {
         @apply bg-background text-foreground;
     }
+    /* Accessible visible focus */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    [tabindex]:focus-visible {
+        outline: 3px solid #e5a50a;
+        outline-offset: 2px;
+        border-radius: 2px;
+    }
 }
 
 html {
     scroll-behavior: smooth;
 }
 
-.hero-pattern {
-    background-image: radial-gradient(circle at 20% 20%, rgba(26, 95, 180, 0.18), transparent 50%),
-        radial-gradient(circle at 80% 10%, rgba(38, 162, 105, 0.2), transparent 45%);
+/* Accessibility: text resizing controls */
+html.a11y-font-1 { font-size: 106.25%; }
+html.a11y-font-2 { font-size: 118.75%; }
+
+/* Accessibility: high contrast mode */
+html.a11y-contrast body { color: #000; }
+html.a11y-contrast .gov-muted { color: #1f2937 !important; }
+html.a11y-contrast a { text-decoration: underline; }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
 }
 
-.section-gradient {
-    background-image: linear-gradient(180deg, rgba(245, 246, 251, 0.96) 0%, rgba(233, 238, 247, 0.96) 100%);
+@layer components {
+    .gov-container {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+    .gov-muted { color: #475569; }
+    .gov-btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm bg-gov-blue px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-gov-blueDark;
+    }
+    .gov-btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm border border-gov-blue bg-white px-6 py-3 text-sm font-semibold text-gov-blue transition-colors duration-200 hover:bg-gov-mist;
+    }
+    .gov-btn-navy {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm bg-gov-navy px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-gov-ink;
+    }
+    .gov-card {
+        @apply rounded border border-gov-line bg-white transition-colors duration-200;
+    }
+    .gov-eyebrow {
+        @apply text-xs font-semibold uppercase tracking-[0.14em] text-gov-blue;
+    }
+    .gov-h1 {
+        @apply text-3xl font-bold leading-tight tracking-tight text-gov-navy sm:text-4xl lg:text-5xl;
+    }
+    .gov-h2 {
+        @apply text-2xl font-bold tracking-tight text-gov-navy sm:text-3xl;
+    }
+    .gov-h3 {
+        @apply text-lg font-bold text-gov-navy sm:text-xl;
+    }
+    .gov-prose {
+        @apply text-base leading-relaxed text-gov-charcoal;
+    }
+    .gov-link {
+        @apply text-gov-blue underline-offset-2 transition-colors duration-200 hover:text-gov-blueDark hover:underline;
+    }
 }
 
-@layer base {
-    [data-debug-wrapper="true"] {
-        display: contents !important;
-    }
-
-    [data-debug-wrapper="true"] > * {
-        margin-left: inherit;
-        margin-right: inherit;
-        margin-top: inherit;
-        margin-bottom: inherit;
-        padding-left: inherit;
-        padding-right: inherit;
-        padding-top: inherit;
-        padding-bottom: inherit;
-        column-gap: inherit;
-        row-gap: inherit;
-        gap: inherit;
-        border-left-width: inherit;
-        border-right-width: inherit;
-        border-top-width: inherit;
-        border-bottom-width: inherit;
-        border-left-style: inherit;
-        border-right-style: inherit;
-        border-top-style: inherit;
-        border-bottom-style: inherit;
-        border-left-color: inherit;
-        border-right-color: inherit;
-        border-top-color: inherit;
-        border-bottom-color: inherit;
-    }
+[data-debug-wrapper="true"] {
+    display: contents !important;
 }

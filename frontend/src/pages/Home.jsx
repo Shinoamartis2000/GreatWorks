@@ -1,181 +1,262 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowRight, CheckCircle2, Calendar, MapPin, FileText, Users } from "lucide-react";
 import { api } from "@/lib/api";
-import { programsSeed } from "@/data/siteData";
-import StoryCard from "@/components/StoryCard";
-import ImpactCounter from "@/components/ImpactCounter";
-import CountdownTimer from "@/components/CountdownTimer";
-import PartnerCarousel from "@/components/PartnerCarousel";
+import { programsSeed, institutionalFacts, organisation } from "@/data/siteData";
+import { deriveProjects } from "@/lib/projects";
+import StatCounter from "@/components/StatCounter";
+import ProjectCard from "@/components/ProjectCard";
+
+const categoryFor = (post) => post.category || post.program_type || "Update";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [programs, setPrograms] = useState(programsSeed);
   const [events, setEvents] = useState([]);
-  const [settings, setSettings] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      const [postsRes, programsRes, eventsRes, settingsRes] = await Promise.all([
+      const [postsRes, programsRes, eventsRes] = await Promise.all([
         api.get("/posts?status=published"),
         api.get("/programs"),
         api.get("/events"),
-        api.get("/settings"),
       ]);
       setPosts(postsRes.data || []);
-      if (programsRes.data?.length) setPrograms(programsRes.data);
+      if (programsRes.data?.length) {
+        // merge structured metadata from seed when API records are sparse
+        setPrograms(
+          programsRes.data.map((p, i) => ({ ...programsSeed[i % programsSeed.length], ...p }))
+        );
+      }
       setEvents(eventsRes.data || []);
-      setSettings(settingsRes.data || {});
     };
     fetchData();
   }, []);
 
-  const nextEvent = useMemo(() => {
-    const upcoming = [...events].sort((a, b) => new Date(a.start_datetime) - new Date(b.start_datetime));
-    return upcoming[0];
-  }, [events]);
+  const projects = useMemo(() => deriveProjects(events).slice(0, 3), [events]);
+  const announcements = useMemo(() => posts.slice(0, 4), [posts]);
 
   return (
-    <motion.div
-      className="hero-pattern"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      <section className="relative overflow-hidden" data-testid="home-hero-section">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/assets/Great works/WhatsApp Image 23.jpeg')" }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-forest/50 to-brand-slate/90" />
-        <div className="relative mx-auto flex max-w-7xl flex-col gap-10 px-6 py-24 text-white md:px-12 md:py-32">
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <p className="text-sm uppercase tracking-[0.3em] text-white/80" data-testid="home-hero-tag">
-              GreatWorks Foundation
-            </p>
-            <h1 className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight md:text-6xl" data-testid="home-hero-title">
-              Empowering Enugu youth and uplifting widows through bold community care.
+    <div>
+      {/* Institutional hero */}
+      <section className="border-b border-gov-line bg-white" data-testid="home-hero-section">
+        <div className="gov-container grid items-stretch gap-0 lg:grid-cols-2">
+          <div className="flex flex-col justify-center py-12 pr-0 lg:py-16 lg:pr-12">
+            <p className="gov-eyebrow" data-testid="home-hero-tag">GreatWorks Foundation</p>
+            <h1 className="mt-3 gov-h1 animate-fade-up" data-testid="home-hero-title">
+              Working Together for Sustainable Community Development
             </h1>
-            <p className="mt-6 max-w-2xl text-lg text-white/90" data-testid="home-hero-subtitle">
-              Our Urban Scholarship Program and Valentine Outreach 2022 bring education, dignity, and relief to families
-              across Enugu.
+            <p className="mt-5 max-w-xl gov-prose" data-testid="home-hero-subtitle">
+              {organisation.mission}
             </p>
-          </motion.div>
-          <div className="flex flex-wrap gap-4">
-            <Link
-              to="/donate"
-              className="rounded-full bg-white px-8 py-4 text-sm font-semibold text-brand-forest shadow-lg transition hover:-translate-y-0.5"
-              data-testid="home-hero-donate"
-            >
-              Donate Now
-            </Link>
-            <a
-              href={settings.gofundme_url || "#"}
-              className="rounded-full border border-white/60 px-8 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
-              data-testid="home-hero-gofundme"
-            >
-              GoFundMe Campaign
-            </a>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link to="/programs" className="gov-btn-primary" data-testid="home-hero-programs">
+                Explore Our Programs <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link to="/impact" className="gov-btn-secondary" data-testid="home-hero-impact">
+                View Our Impact
+              </Link>
+            </div>
           </div>
-          <p className="text-sm text-white/80" data-testid="home-social-proof">
-            Follow the movement: @greatworksf
-          </p>
+          <div className="relative min-h-[280px] w-full overflow-hidden bg-gov-mist lg:min-h-[460px]">
+            <img
+              src="/assets/Great works/WhatsApp Image 25.jpeg"
+              alt="GreatWorks Foundation community programme in Enugu"
+              className="h-full w-full object-cover"
+            />
+          </div>
         </div>
-      </section>
-
-      <section className="section-gradient py-20" data-testid="home-programs-section">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 md:px-12">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-brand-muted">Core Programs</p>
-            <h2 className="mt-3 font-serif text-3xl text-brand-forest">Where your giving fuels Enugu programs</h2>
-          </div>
-          <div className="grid gap-6 md:grid-cols-3">
-            {programs.map((program, index) => (
-              <div key={program.id || index} className="rounded-2xl bg-white/70 p-6 shadow-sm" data-testid={`program-card-${index}`}>
-                <img src={program.image || "/assets/Great works/WhatsApp Image 24.jpeg"} alt={program.name} className="h-40 w-full rounded-xl object-cover" />
-                <h3 className="mt-4 font-serif text-xl text-brand-forest">{program.name}</h3>
-                <p className="mt-2 text-sm text-brand-muted">{program.description}</p>
-                <p className="mt-4 text-sm font-semibold text-brand-purple" data-testid={`program-impact-${index}`}>
-                  {program.impact}
-                </p>
+        {/* Verified facts panel */}
+        <div className="border-t border-gov-line bg-gov-mist">
+          <div className="gov-container grid divide-y divide-gov-line sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-x">
+            {institutionalFacts.map((fact, index) => (
+              <div key={fact.label} className="flex items-center gap-3 px-2 py-5 lg:px-6" data-testid={`home-fact-${index}`}>
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-gov-green" aria-hidden="true" />
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-gov-slate">{fact.label}</p>
+                  <p className="text-sm font-semibold text-gov-navy">{fact.value}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20" data-testid="home-impact-section">
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 md:px-12">
-          <div className="grid gap-6 md:grid-cols-3">
-            <ImpactCounter label="Communities served" value={120} suffix="+" testId="impact-communities" />
-            <ImpactCounter label="Homes rebuilt" value={3500} suffix="" testId="impact-homes" />
-            <ImpactCounter label="Volunteers mobilized" value={860} suffix="" testId="impact-volunteers" />
+      {/* Announcement / latest updates strip */}
+      <section className="border-b border-gov-line bg-gov-navy" data-testid="home-announcements">
+        <div className="gov-container flex flex-col gap-4 py-4 lg:flex-row lg:items-center">
+          <div className="flex shrink-0 items-center gap-2 pr-6 lg:border-r lg:border-white/20">
+            <span className="rounded-sm bg-gov-amber px-2 py-1 text-xs font-bold uppercase tracking-wide text-gov-ink">
+              Latest Updates
+            </span>
           </div>
-          <div className="grid gap-8 md:grid-cols-[1.2fr_1fr]">
-            <div>
-              <h2 className="font-serif text-3xl text-brand-forest">Next community activation</h2>
-              <p className="mt-3 text-sm text-brand-muted">
-                Join the next deployment to bring clean water and emergency shelter to families rebuilding.
-              </p>
-              {nextEvent ? (
-                <div className="mt-6 rounded-2xl bg-white/70 p-6 shadow-sm" data-testid="next-event-card">
-                  <p className="text-xs uppercase tracking-widest text-brand-muted">Upcoming Event</p>
-                  <h3 className="mt-2 font-serif text-xl text-brand-forest" data-testid="next-event-title">
-                    {nextEvent.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-brand-muted">
-                    {new Date(nextEvent.start_datetime).toLocaleString()} · {nextEvent.location}
-                  </p>
-                  <div className="mt-4">
-                    <CountdownTimer targetDate={nextEvent.start_datetime} testId="event-countdown" />
-                  </div>
-                </div>
-              ) : (
-                <p className="mt-4 text-sm text-brand-muted" data-testid="no-event-message">
-                  New events are being scheduled now.
-                </p>
-              )}
-            </div>
-            <div className="rounded-2xl bg-white/70 p-6 shadow-sm" data-testid="home-latest-stories">
-              <p className="text-xs uppercase tracking-widest text-brand-muted">Latest Stories</p>
-              <div className="mt-4 grid gap-4">
-                {posts.slice(0, 2).map((story) => (
-                  <StoryCard key={story.id} story={story} />
-                ))}
-              </div>
+          <div className="flex flex-wrap gap-x-8 gap-y-2">
+            {announcements.length === 0 && (
+              <p className="text-sm text-white/70">Programme updates and public notices will appear here.</p>
+            )}
+            {announcements.map((post) => (
               <Link
+                key={post.id}
                 to="/stories"
-                className="mt-4 inline-flex text-sm font-semibold text-brand-forest"
-                data-testid="home-stories-link"
+                className="group flex items-center gap-2 text-sm text-white/85 transition-colors duration-200 hover:text-white"
+                data-testid={`announcement-${post.id}`}
               >
-                View all stories →
+                <span className="text-xs font-semibold uppercase tracking-wide text-gov-amber">{categoryFor(post)}</span>
+                <span className="text-white/40">·</span>
+                <span className="group-hover:underline">{post.title}</span>
               </Link>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="section-gradient py-20" data-testid="home-partners-section">
-        <div className="mx-auto max-w-7xl px-6 md:px-12">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-brand-muted">Partners</p>
-              <h2 className="mt-3 font-serif text-3xl text-brand-forest">Trusted by communities and partners</h2>
-            </div>
-            <Link
-              to="/get-involved"
-              className="rounded-full border border-brand-forest px-6 py-3 text-sm font-semibold text-brand-forest"
-              data-testid="home-partner-cta"
-            >
-              Become a partner
-            </Link>
-          </div>
-          <div className="mt-8">
-            <PartnerCarousel />
+      {/* Key institutional indicators */}
+      <section className="bg-white py-14 md:py-20" data-testid="home-indicators">
+        <div className="gov-container">
+          <p className="gov-eyebrow">Key Institutional Indicators</p>
+          <h2 className="mt-2 gov-h2">Programme activity at a glance</h2>
+          <p className="mt-3 max-w-2xl text-sm text-gov-slate">
+            Figures below are drawn from the organisation's current programme records and are updated as new
+            activities are documented.
+          </p>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCounter value={programs.length} label="Active programme areas" testId="indicator-programs" />
+            <StatCounter value={events.length} label="Documented projects & events" testId="indicator-projects" />
+            <StatCounter value={1} label="State of operation" note="Enugu, Nigeria" testId="indicator-region" />
+            <StatCounter value={3} label="Areas of work" note="Education · Welfare · Relief" testId="indicator-areas" />
           </div>
         </div>
       </section>
-    </motion.div>
+
+      {/* About summary */}
+      <section className="border-y border-gov-line bg-gov-mist py-14 md:py-20" data-testid="home-about">
+        <div className="gov-container grid gap-10 lg:grid-cols-[1.3fr_1fr]">
+          <div>
+            <p className="gov-eyebrow">Who We Are</p>
+            <h2 className="mt-2 gov-h2">A community organisation focused on measurable outcomes</h2>
+            <p className="mt-4 gov-prose">
+              GreatWorks Foundation is a non-profit organisation working in Enugu, Nigeria. Our work is organised
+              around three areas: education and scholarships, community welfare and outreach, and relief and recovery.
+              We plan and deliver programmes together with local communities and volunteers.
+            </p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div className="border-l-4 border-gov-blue bg-white p-4">
+                <h3 className="font-serif text-base font-bold text-gov-navy">Our Mission</h3>
+                <p className="mt-1 text-sm text-gov-charcoal">{organisation.mission}</p>
+              </div>
+              <div className="border-l-4 border-gov-green bg-white p-4">
+                <h3 className="font-serif text-base font-bold text-gov-navy">Our Vision</h3>
+                <p className="mt-1 text-sm text-gov-charcoal">{organisation.vision}</p>
+              </div>
+            </div>
+            <Link to="/about" className="mt-6 inline-flex gov-btn-secondary" data-testid="home-about-cta">
+              Read more about the organisation
+            </Link>
+          </div>
+          <div className="gov-card p-6">
+            <h3 className="gov-h3">Quick links</h3>
+            <ul className="mt-4 divide-y divide-gov-line">
+              {[
+                { icon: FileText, label: "Publications & reports", path: "/publications" },
+                { icon: Users, label: "Partnerships", path: "/partnerships" },
+                { icon: Calendar, label: "Projects & events", path: "/projects" },
+                { icon: MapPin, label: "Contact & office", path: "/contact" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    to={item.path}
+                    className="flex items-center justify-between py-3 text-sm font-semibold text-gov-navy transition-colors duration-200 hover:text-gov-blue"
+                    data-testid={`home-quicklink-${item.path.replace("/", "")}`}
+                  >
+                    <span className="flex items-center gap-3">
+                      <item.icon className="h-5 w-5 text-gov-blue" aria-hidden="true" />
+                      {item.label}
+                    </span>
+                    <ArrowRight className="h-4 w-4 text-gov-slate" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Programs preview */}
+      <section className="bg-white py-14 md:py-20" data-testid="home-programs">
+        <div className="gov-container">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="gov-eyebrow">Programs & Areas of Work</p>
+              <h2 className="mt-2 gov-h2">Our programmes</h2>
+            </div>
+            <Link to="/programs" className="text-sm font-semibold text-gov-blue hover:underline" data-testid="home-programs-link">
+              View all programmes →
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            {programs.slice(0, 3).map((program, index) => (
+              <article key={program.id || index} className="gov-card overflow-hidden" data-testid={`home-program-${index}`}>
+                <div className="h-40 w-full overflow-hidden bg-gov-mist">
+                  <img src={program.image} alt={program.name} loading="lazy" className="h-full w-full object-cover" />
+                </div>
+                <div className="p-5">
+                  <span className="rounded-sm border border-gov-line bg-gov-mist px-2 py-0.5 text-xs font-semibold text-gov-slate">
+                    {program.status || "Active"}
+                  </span>
+                  <h3 className="mt-3 font-serif text-lg font-bold text-gov-navy">{program.name}</h3>
+                  <p className="mt-2 text-sm text-gov-charcoal">{program.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured projects */}
+      {projects.length > 0 && (
+        <section className="border-t border-gov-line bg-gov-mist py-14 md:py-20" data-testid="home-projects">
+          <div className="gov-container">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="gov-eyebrow">Projects Directory</p>
+                <h2 className="mt-2 gov-h2">Recent projects & events</h2>
+              </div>
+              <Link to="/projects" className="text-sm font-semibold text-gov-blue hover:underline" data-testid="home-projects-link">
+                Browse the full directory →
+              </Link>
+            </div>
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
+              {projects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} onView={() => {}} testId={`home-project-${index}`} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Get involved / donate band */}
+      <section className="bg-gov-navy py-14 md:py-16" data-testid="home-cta">
+        <div className="gov-container grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:items-center">
+          <div>
+            <h2 className="font-serif text-2xl font-bold text-white sm:text-3xl">
+              Support our work in Enugu
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/80">
+              Governments, institutions, CSR partners, and individuals can support our programmes through
+              partnership, volunteering, or a contribution. We welcome enquiries from institutional partners.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3 lg:justify-end">
+            <Link to="/donate" className="rounded-sm bg-white px-6 py-3 text-sm font-semibold text-gov-navy transition-colors duration-200 hover:bg-white/90" data-testid="home-cta-donate">
+              Donate
+            </Link>
+            <Link to="/partnerships" className="rounded-sm border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10" data-testid="home-cta-partner">
+              Partner with us
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 

@@ -6,14 +6,21 @@ import Footer from "@/components/Footer";
 import AuthCallback from "@/components/AuthCallback";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { AuthProvider } from "@/context/AuthContext";
+import ScrollToTop from "@/components/ScrollToTop";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
+import Programs from "@/pages/Programs";
+import Projects from "@/pages/Projects";
+import Impact from "@/pages/Impact";
+import Publications from "@/pages/Publications";
+import Partnerships from "@/pages/Partnerships";
 import Stories from "@/pages/Stories";
 import StoryDetail from "@/pages/StoryDetail";
 import Gallery from "@/pages/Gallery";
 import Donate from "@/pages/Donate";
 import GetInvolved from "@/pages/GetInvolved";
 import Contact from "@/pages/Contact";
+import Search from "@/pages/Search";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 
@@ -27,12 +34,18 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
+      <Route path="/programs" element={<Programs />} />
+      <Route path="/projects" element={<Projects />} />
+      <Route path="/impact" element={<Impact />} />
+      <Route path="/publications" element={<Publications />} />
+      <Route path="/partnerships" element={<Partnerships />} />
       <Route path="/stories" element={<Stories />} />
       <Route path="/stories/:slug" element={<StoryDetail />} />
       <Route path="/gallery" element={<Gallery />} />
       <Route path="/donate" element={<Donate />} />
       <Route path="/get-involved" element={<GetInvolved />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/search" element={<Search />} />
       <Route path="/login" element={<Login />} />
       <Route
         path="/admin"
@@ -50,9 +63,10 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="App">
+        <ScrollToTop />
+        <div className="App min-h-screen bg-white">
           <Navbar />
-          <main className="pt-20">
+          <main id="main-content">
             <AppRoutes />
           </main>
           <Footer />

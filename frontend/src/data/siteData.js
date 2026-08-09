@@ -1,32 +1,124 @@
+import {
+  ShieldCheck,
+  FileText,
+  Users,
+  HeartHandshake,
+  Accessibility,
+  Landmark,
+} from "lucide-react";
+
+// Primary institutional navigation
 export const navLinks = [
-  { name: "Home", path: "/", testId: "nav-link-home" },
   { name: "About", path: "/about", testId: "nav-link-about" },
-  { name: "Stories", path: "/stories", testId: "nav-link-stories" },
-  { name: "Gallery", path: "/gallery", testId: "nav-link-gallery" },
-  { name: "Donate", path: "/donate", testId: "nav-link-donate" },
+  { name: "Programs", path: "/programs", testId: "nav-link-programs" },
+  { name: "Projects", path: "/projects", testId: "nav-link-projects" },
+  { name: "Impact", path: "/impact", testId: "nav-link-impact" },
+  { name: "Publications", path: "/publications", testId: "nav-link-publications" },
+  { name: "Partnerships", path: "/partnerships", testId: "nav-link-partnerships" },
   { name: "Get Involved", path: "/get-involved", testId: "nav-link-get-involved" },
   { name: "Contact", path: "/contact", testId: "nav-link-contact" },
-  { name: "Login", path: "/login", testId: "nav-link-login" },
-  { name: "Dashboard", path: "/admin", testId: "nav-link-admin" },
+];
+
+export const organisation = {
+  name: "GreatWorks Foundation",
+  shortName: "GreatWorks",
+  tagline: "Rebuilding Lives for the Future",
+  mission:
+    "GreatWorks Foundation works alongside communities in Enugu, Nigeria to deliver programmes in education, social welfare, and community relief. We provide scholarships and mentorship for students, support for widows and vulnerable families, and coordinated relief during periods of need.",
+  vision:
+    "Communities in which every individual has access to education, dignity, and the support required to build a stable future.",
+  region: "Enugu, Nigeria",
+  email: "hello@greatworksfoundation.org",
+  phone: "+234 703 528 8648",
+  phoneRaw: "+2347035288648",
+  officeHours: "Monday – Friday, 9:00am – 5:00pm (WAT)",
+  handle: "@greatworksf",
+  socials: {
+    facebook: "https://facebook.com/greatworksf",
+    instagram: "https://instagram.com/greatworksf",
+    x: "https://x.com/greatworksf",
+  },
+};
+
+// Verified facts derived only from existing organisational content.
+export const institutionalFacts = [
+  { label: "Focus areas", value: "Education · Welfare · Relief" },
+  { label: "Operating region", value: "Enugu, Nigeria" },
+  { label: "Active programmes", value: "3" },
+  { label: "Contact", value: organisation.phone },
+];
+
+export const missionValues = [
+  {
+    title: "Accountability",
+    icon: ShieldCheck,
+    text: "We take responsibility for our commitments and report on our activities openly.",
+  },
+  {
+    title: "Transparency",
+    icon: FileText,
+    text: "We document our programmes and make information available for review.",
+  },
+  {
+    title: "Community partnership",
+    icon: Users,
+    text: "We plan and deliver programmes together with the communities we serve.",
+  },
+  {
+    title: "Dignity",
+    icon: HeartHandshake,
+    text: "We treat every beneficiary with respect and protect their privacy.",
+  },
+  {
+    title: "Inclusion",
+    icon: Accessibility,
+    text: "We work to reach those most often left out of support systems.",
+  },
+  {
+    title: "Stewardship",
+    icon: Landmark,
+    text: "We manage resources carefully and direct them towards measurable outcomes.",
+  },
 ];
 
 export const programsSeed = [
   {
     name: "Urban Scholarship Program (Enugu)",
+    objective: "Improve access to education for urban youth in Enugu.",
+    beneficiaries: "Students in Enugu",
+    area: "Enugu, Nigeria",
+    activities: ["Tuition support", "Learning materials", "Mentorship"],
+    outcome: "Students supported to continue their education.",
+    status: "Active",
     impact: "Scholarships + mentorship for urban youth",
-    description: "Supporting students in Enugu with tuition, mentorship, and learning resources.",
+    description:
+      "Supporting students in Enugu with tuition, mentorship, and learning resources so that financial hardship does not interrupt their education.",
     image: "/assets/Great works/WhatsApp Image 22.jpeg",
   },
   {
     name: "Valentine Outreach 2022 (Widows & Street)",
+    objective: "Provide care and essential support to widows and street families.",
+    beneficiaries: "Widows and street families",
+    area: "Enugu, Nigeria",
+    activities: ["Meals & care kits", "Counselling", "Community visits"],
+    outcome: "Families reached with essential support and care.",
+    status: "Completed",
     impact: "Compassionate care + essentials",
-    description: "Community outreach delivering meals, care kits, and emotional support.",
+    description:
+      "A community outreach delivering meals, care kits, and emotional support to widows and street families, restoring dignity and connection.",
     image: "/assets/Great works/WhatsApp Image 23.jpeg",
   },
   {
     name: "Community Relief & Recovery",
+    objective: "Coordinate emergency relief and recovery support for families.",
+    beneficiaries: "Families in need across Enugu",
+    area: "Enugu, Nigeria",
+    activities: ["Emergency relief", "Food support", "Recovery partnerships"],
+    outcome: "Ongoing relief for families affected by hardship.",
+    status: "Active",
     impact: "Ongoing aid for families",
-    description: "Emergency relief, food support, and recovery partnerships across Enugu.",
+    description:
+      "Emergency relief, food support, and recovery partnerships across Enugu, coordinated with local volunteers and community leaders.",
     image: "/assets/Great works/WhatsApp Image 25.jpeg",
   },
 ];
@@ -57,7 +149,6 @@ const galleryFiles = [
   "WhatsApp Image 2026-02-09 at 13.03.21.jpeg",
   "WhatsApp Image 2026-02-09 at 13.03.22.jpeg",
   "WhatsApp Image 2026-02-09 at 13.03.23.jpeg",
-  "WhatsApp Image 2026-02-09 at 13.03.24.jpeg",
   "WhatsApp Image 2026-02-09 at 13.03.26.jpeg",
   "WhatsApp Image 2026-02-09 at 13.03.27.jpeg",
   "WhatsApp Image 2026-02-09 at 13.03.28.jpeg",
@@ -102,7 +193,7 @@ export const localGallery = galleryFiles.map((file, index) => ({
   id: `local-${index}`,
   src: `/assets/Great works/${file}`,
   programType: programTypes[index % programTypes.length],
-  label: "GreatWorks field impact",
+  label: "GreatWorks field documentation",
 }));
 
 export const localVideos = [
@@ -115,13 +206,45 @@ export const localVideos = [
 ];
 
 export const givingOptions = [
-  { label: "Scholarship Support", amount: 35, impact: "Supports student learning resources" },
-  { label: "Outreach Care Pack", amount: 75, impact: "Provides a widow with essentials" },
-  { label: "Community Relief", amount: 250, impact: "Funds a full outreach day" },
+  { label: "Scholarship support", amount: 35, impact: "Contributes to a student's learning resources" },
+  { label: "Outreach care pack", amount: 75, impact: "Provides essentials for a widow or family" },
+  { label: "Community relief", amount: 250, impact: "Supports a full outreach day" },
 ];
 
 export const contactMethods = [
-  { label: "Email", value: "hello@greatworksfoundation.org" },
-  { label: "Phone", value: "+2347035288648" },
-  { label: "Address", value: "145 Hope Street, Suite 22, Austin, TX" },
+  { label: "Registered office", value: "Enugu, Nigeria" },
+  { label: "Email", value: organisation.email },
+  { label: "Telephone", value: organisation.phone },
+  { label: "Office hours", value: organisation.officeHours },
+];
+
+// Footer structure
+export const footerColumns = [
+  {
+    heading: "The organisation",
+    links: [
+      { name: "About us", path: "/about" },
+      { name: "Programs", path: "/programs" },
+      { name: "Projects", path: "/projects" },
+      { name: "Impact", path: "/impact" },
+    ],
+  },
+  {
+    heading: "Transparency",
+    links: [
+      { name: "Publications", path: "/publications" },
+      { name: "Partnerships", path: "/partnerships" },
+      { name: "Media library", path: "/gallery" },
+      { name: "News & notices", path: "/stories" },
+    ],
+  },
+  {
+    heading: "Engage",
+    links: [
+      { name: "Get involved", path: "/get-involved" },
+      { name: "Donate", path: "/donate" },
+      { name: "Contact", path: "/contact" },
+      { name: "Staff login", path: "/login" },
+    ],
+  },
 ];

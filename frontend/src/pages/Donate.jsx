@@ -1,14 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-import { givingOptions } from "@/data/siteData";
+import { givingOptions, organisation } from "@/data/siteData";
+import PageHeader from "@/components/PageHeader";
 
 const Donate = () => {
   const [settings, setSettings] = useState({});
   const [goals, setGoals] = useState([]);
   const [donation, setDonation] = useState({ name: "", email: "", amount: 50, recurring: false, frequency: "Monthly" });
-  const [calculator, setCalculator] = useState(50);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -20,22 +19,14 @@ const Donate = () => {
     fetchData();
   }, []);
 
-  const impact = useMemo(() => {
-    return {
-      meals: Math.floor(calculator * 3),
-      kits: Math.floor(calculator / 25),
-      nights: Math.floor(calculator / 40),
-    };
-  }, [calculator]);
-
   const submitDonation = async (event) => {
     event.preventDefault();
-    const validationErrors = {};
-    if (!donation.name) validationErrors.name = "Full name is required";
-    if (!donation.email) validationErrors.email = "Email is required";
-    if (!donation.amount || Number(donation.amount) < 5) validationErrors.amount = "Minimum donation is 5";
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length) return;
+    const v = {};
+    if (!donation.name) v.name = "Full name is required";
+    if (!donation.email) v.email = "Email is required";
+    if (!donation.amount || Number(donation.amount) < 5) v.amount = "Minimum contribution is 5";
+    setErrors(v);
+    if (Object.keys(v).length) return;
     await api.post("/donations", {
       donor_name: donation.name,
       donor_email: donation.email,
@@ -43,134 +34,123 @@ const Donate = () => {
       recurring: donation.recurring,
       frequency: donation.frequency,
     });
-    toast.success("Donation recorded. Thank you!");
+    toast.success("Thank you. Your contribution has been recorded.");
     setDonation({ name: "", email: "", amount: 50, recurring: false, frequency: "Monthly" });
   };
 
   const goal = goals[0];
-  const progress = goal ? Math.min(100, Math.round((goal.current_amount / goal.target_amount) * 100)) : 42;
+  const progress = goal && goal.target_amount ? Math.min(100, Math.round((goal.current_amount / goal.target_amount) * 100)) : null;
+  const field = "h-12 w-full rounded-sm border border-gov-line px-4 text-sm text-gov-navy";
 
   return (
-    <motion.div className="section-gradient" data-testid="donate-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
-      <section className="mx-auto max-w-7xl px-6 py-20 md:px-12">
-        <p className="text-xs uppercase tracking-widest text-brand-muted">Donate</p>
-        <h1 className="mt-3 font-serif text-4xl text-brand-forest">Your gift rebuilds futures</h1>
-        <div className="mt-8 grid gap-8 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-2xl bg-white/70 p-6 shadow-sm">
-            <h2 className="font-serif text-2xl text-brand-forest">Give today</h2>
-            <form className="mt-6 grid gap-4" onSubmit={submitDonation}>
-              <input
-                type="text"
-                placeholder="Full name"
-                className="h-12 rounded-lg border border-brand-forest/20 px-4"
-                value={donation.name}
-                onChange={(event) => setDonation({ ...donation, name: event.target.value })}
-                data-testid="donate-name-input"
-              />
-              {errors.name && <p className="text-xs text-brand-red">{errors.name}</p>}
-              <input
-                type="email"
-                placeholder="Email address"
-                className="h-12 rounded-lg border border-brand-forest/20 px-4"
-                value={donation.email}
-                onChange={(event) => setDonation({ ...donation, email: event.target.value })}
-                data-testid="donate-email-input"
-              />
-              {errors.email && <p className="text-xs text-brand-red">{errors.email}</p>}
-              <input
-                type="number"
-                min="5"
-                className="h-12 rounded-lg border border-brand-forest/20 px-4"
-                value={donation.amount}
-                onChange={(event) => setDonation({ ...donation, amount: event.target.value })}
-                data-testid="donate-amount-input"
-              />
-              {errors.amount && <p className="text-xs text-brand-red">{errors.amount}</p>}
-              <label className="flex items-center gap-3 text-sm text-brand-muted">
-                <input
-                  type="checkbox"
-                  checked={donation.recurring}
-                  onChange={(event) => setDonation({ ...donation, recurring: event.target.checked })}
-                  data-testid="donate-recurring-toggle"
-                />
-                Make this a recurring gift
+    <div>
+      <PageHeader
+        eyebrow="Support Our Work"
+        title="Donate"
+        description="Contributions support our education, welfare, and relief programmes in Enugu, Nigeria. Donations are recorded and acknowledged."
+        breadcrumbs={[{ label: "Donate" }]}
+        testId="donate-header"
+      />
+
+      <section className="bg-white py-14 md:py-20" data-testid="donate-page">
+        <div className="gov-container grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+          <form className="gov-card p-6 md:p-8" onSubmit={submitDonation} noValidate>
+            <h2 className="gov-h3">Make a contribution</h2>
+            <div className="mt-6 grid gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="d-name" className="text-sm font-semibold text-gov-navy">Full name</label>
+                  <input id="d-name" className={`mt-1 ${field}`} value={donation.name} onChange={(e) => setDonation({ ...donation, name: e.target.value })} data-testid="donate-name-input" />
+                  {errors.name && <p className="mt-1 text-xs text-gov-red">{errors.name}</p>}
+                </div>
+                <div>
+                  <label htmlFor="d-email" className="text-sm font-semibold text-gov-navy">Email</label>
+                  <input id="d-email" type="email" className={`mt-1 ${field}`} value={donation.email} onChange={(e) => setDonation({ ...donation, email: e.target.value })} data-testid="donate-email-input" />
+                  {errors.email && <p className="mt-1 text-xs text-gov-red">{errors.email}</p>}
+                </div>
+              </div>
+              <div>
+                <span className="text-sm font-semibold text-gov-navy">Select an amount</span>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {givingOptions.map((o) => (
+                    <button
+                      type="button"
+                      key={o.amount}
+                      onClick={() => setDonation({ ...donation, amount: o.amount })}
+                      className={`rounded-sm border px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                        Number(donation.amount) === o.amount ? "border-gov-blue bg-gov-blue text-white" : "border-gov-line text-gov-charcoal hover:bg-gov-mist"
+                      }`}
+                      data-testid={`donate-preset-${o.amount}`}
+                    >
+                      ${o.amount}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label htmlFor="d-amount" className="text-sm font-semibold text-gov-navy">Or enter an amount (USD)</label>
+                <input id="d-amount" type="number" min="5" className={`mt-1 ${field}`} value={donation.amount} onChange={(e) => setDonation({ ...donation, amount: e.target.value })} data-testid="donate-amount-input" />
+                {errors.amount && <p className="mt-1 text-xs text-gov-red">{errors.amount}</p>}
+              </div>
+              <label className="flex items-center gap-3 text-sm text-gov-charcoal">
+                <input type="checkbox" checked={donation.recurring} onChange={(e) => setDonation({ ...donation, recurring: e.target.checked })} data-testid="donate-recurring-toggle" />
+                Make this a recurring contribution
               </label>
               {donation.recurring && (
-                <select
-                  className="h-12 rounded-lg border border-brand-forest/20 px-4"
-                  value={donation.frequency}
-                  onChange={(event) => setDonation({ ...donation, frequency: event.target.value })}
-                  data-testid="donate-frequency-select"
-                >
+                <select className={field} value={donation.frequency} onChange={(e) => setDonation({ ...donation, frequency: e.target.value })} data-testid="donate-frequency-select">
                   <option>Monthly</option>
                   <option>Quarterly</option>
                   <option>Yearly</option>
                 </select>
               )}
-              <button
-                type="submit"
-                className="rounded-full bg-brand-forest px-6 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
-                data-testid="donate-submit-button"
-              >
-                Submit Donation
-              </button>
-            </form>
-            <div className="mt-6 rounded-2xl border border-brand-forest/10 bg-white p-4">
-              <p className="text-xs uppercase tracking-widest text-brand-muted">GoFundMe</p>
-              <a
-                href={settings.gofundme_url || "#"}
-                className="mt-2 inline-flex rounded-full bg-brand-red px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
-                data-testid="gofundme-link"
-              >
-                Support our GoFundMe
-              </a>
+              <button type="submit" className="gov-btn-primary w-full sm:w-auto" data-testid="donate-submit-button">Submit contribution</button>
             </div>
-          </div>
+          </form>
+
           <div className="space-y-6">
-            <div className="rounded-2xl bg-white/70 p-6 shadow-sm">
-              <h3 className="font-serif text-xl text-brand-forest">Impact calculator</h3>
-              <input
-                type="range"
-                min="10"
-                max="500"
-                value={calculator}
-                onChange={(event) => setCalculator(Number(event.target.value))}
-                className="mt-4 w-full"
-                data-testid="impact-calculator-slider"
-              />
-              <p className="mt-3 text-sm text-brand-muted" data-testid="impact-calculator-amount">
-                ${calculator} can provide {impact.meals} meals, {impact.kits} education kits, and {impact.nights} safe nights.
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/70 p-6 shadow-sm">
-              <h3 className="font-serif text-xl text-brand-forest">Current goal</h3>
-              <p className="mt-2 text-sm text-brand-muted" data-testid="donation-goal-title">
-                {goal ? goal.title : "2024 Recovery Goal"}
-              </p>
-              <div className="mt-4 h-3 w-full rounded-full bg-brand-forest/10">
-                <div
-                  className="h-3 rounded-full bg-brand-forest"
-                  style={{ width: `${progress}%` }}
-                  data-testid="donation-goal-progress"
-                />
+            {goal && (
+              <div className="gov-card p-6" data-testid="donate-goal">
+                <h3 className="gov-h3">Current funding goal</h3>
+                <p className="mt-1 text-sm text-gov-charcoal" data-testid="donation-goal-title">{goal.title}</p>
+                {progress !== null && (
+                  <>
+                    <div className="mt-4 h-2.5 w-full rounded-sm bg-gov-line">
+                      <div className="h-2.5 rounded-sm bg-gov-green" style={{ width: `${progress}%` }} data-testid="donation-goal-progress" />
+                    </div>
+                    <p className="mt-2 text-xs text-gov-slate">{progress}% of ${goal.target_amount?.toLocaleString()} funded</p>
+                  </>
+                )}
               </div>
-              <p className="mt-2 text-xs text-brand-muted">{progress}% funded</p>
-            </div>
-            <div className="rounded-2xl bg-white/70 p-6 shadow-sm">
-              <h3 className="font-serif text-xl text-brand-forest">Giving options</h3>
-              <div className="mt-4 space-y-4">
-                {givingOptions.map((option, index) => (
-                  <div key={option.label} className="rounded-xl border border-brand-forest/10 p-4" data-testid={`giving-option-${index}`}>
-                    <p className="font-semibold text-brand-forest">${option.amount} — {option.label}</p>
-                    <p className="text-sm text-brand-muted">{option.impact}</p>
-                  </div>
+            )}
+
+            <div className="gov-card p-6">
+              <h3 className="gov-h3">How contributions are used</h3>
+              <ul className="mt-4 divide-y divide-gov-line">
+                {givingOptions.map((o) => (
+                  <li key={o.label} className="py-3" data-testid={`giving-option-${o.amount}`}>
+                    <p className="text-sm font-semibold text-gov-navy">${o.amount} — {o.label}</p>
+                    <p className="text-sm text-gov-slate">{o.impact}</p>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
+
+            {settings.gofundme_url && (
+              <div className="gov-card border-l-4 border-gov-blue p-6">
+                <h3 className="gov-h3">External campaign</h3>
+                <a href={settings.gofundme_url} target="_blank" rel="noreferrer" className="mt-3 inline-flex gov-btn-secondary" data-testid="gofundme-link">
+                  Support our campaign
+                </a>
+              </div>
+            )}
+
+            <p className="text-xs text-gov-slate">
+              For institutional or CSR giving, please <a href={`mailto:${organisation.email}`} className="gov-link">contact our team</a>.
+            </p>
           </div>
         </div>
       </section>
-    </motion.div>
+    </div>
   );
 };
 

@@ -1,0 +1,28 @@
+{
+  "summary": "Comprehensive frontend testing of GreatWorks Foundation institutional NGO redesign. Tested utility bar (a11y font+/-, contrast, EN/FR language, helpline/email), primary nav (9 items), search flow, home hero + fact panel + announcements + indicators + programs, /programs, /projects with filters + detail dialog, /impact indicators+results table, /publications tabs, /partnerships segmented cards, /contact form + map, /donate presets + submit, /get-involved volunteer form, footer newsletter, /stories, /gallery, and /admin redirect. All 15 major flows work. Form submissions verified via network (200 OK on /api/contact, /api/donations, /api/volunteers, /api/newsletter) and sonner toast rendered.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Projects page", "issues": ["React hydration warnings: dev tooling injects <span> wrappers inside <select> (options) and <tbody> (Impact table rows), producing 'In HTML, <span> cannot be a child of <select>/<tbody>' warnings. Non-blocking but noisy in console."]},
+      {"screen": "Projects listing", "issues": ["Only 2 of 4 rendered project cards expose a '-view' button; verify that all project cards intended to open the detail dialog have the trigger. If some cards intentionally have no dialog, ignore."]}
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_3.json"],
+  "action_items": [
+    "(Low) Investigate React hydration warnings on Projects <select> options and Impact <tbody> rows caused by dev-tooling <span data-ve-dynamic> wrappers inside array maps - this appears to be from an external x-source-var wrapper and is only visible in dev mode.",
+    "(Low) Ensure every visible project card renders a view button consistently, or hide cards that cannot open a detail dialog."
+  ],
+  "critical_code_review_comments": [
+    "Admin.jsx is 734 lines - consider splitting per resource CRUD sub-components (guideline: >700 lines).",
+    "Sonner toasts render only briefly; if tests need to assert on them, expose a persistent aria-live region or data-testid on the toast container.",
+    "Multiple 401 responses in console on public pages (likely admin/CMS pre-fetches). Guard those calls behind auth state to reduce console noise."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (skip)", "frontend": "100% of tested flows pass"},
+  "seed_data_creation": "Created test submissions: contact (Test User), donation ($75, Test Donor), volunteer (TEST Volunteer), newsletter (test-news@example.com). All prefixed/identifiable as automated tests.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 15 required flows are functional. Notes: (1) contrast toggle applies class 'a11y-contrast' on <html>, not 'high-contrast'. (2) Project view buttons follow pattern [data-testid$='-view'] under project-{n}. (3) Toasts are sonner - use [data-sonner-toast] selector, not body text. (4) 401 console errors on public pages are from admin CMS endpoints and are non-blocking. (5) Hydration warnings only appear in dev overlay tooling, not real prod bugs. Skipped: admin CRUD (no password), publications documents (empty state expected)."
+}
