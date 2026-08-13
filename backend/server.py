@@ -1393,10 +1393,40 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+async def ensure_admin_user() -> None:
+    """Idempotently ensure a staff Admin account exists with the configured password.
+    Creates it if missing; resets the hash only if the configured password no longer matches."""
+    admin_email = os.environ.get("ADMIN_EMAIL", "admin@greatworksf.org").strip().lower()
+    admin_password = os.environ.get("ADMIN_PASSWORD", "GreatWorks@2026")
+    admin_name = os.environ.get("ADMIN_NAME", "GreatWorks Admin")
+    existing = await db.users.find_one({"email": admin_email})
+    if existing is None:
+        await insert_doc(
+            db.users,
+            {
+                "user_id": f"user_{uuid.uuid4().hex[:12]}",
+                "name": admin_name,
+                "email": admin_email,
+                "role": "Admin",
+                "password_hash": hash_password(admin_password),
+                "auth_provider": "local",
+                "created_at": now_iso(),
+            },
+        )
+        logger.info("Seeded admin user %s", admin_email)
+    elif not existing.get("password_hash") or not verify_password(admin_password, existing["password_hash"]):
+        await db.users.update_one(
+            {"email": admin_email},
+            {"$set": {"password_hash": hash_password(admin_password), "role": "Admin"}},
+        )
+        logger.info("Reset admin password for %s", admin_email)
+
+
 @app.on_event("startup")
 async def startup_event():
     await get_settings_doc()
     await ensure_seed_data()
+    await ensure_admin_user()
 
 
 @app.on_event("shutdown")

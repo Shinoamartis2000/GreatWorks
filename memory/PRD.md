@@ -62,7 +62,13 @@ Redesigned the entire PUBLIC site into an official, government/public-sector ins
 ### Verification
 - Frontend testing agent iteration_3.json: 15/15 public flows pass (nav, search, a11y controls, filters, project dialog, forms POST 200 for contact/donations/volunteers/newsletter). Fixed: removed admin-only /reports call from public Publications page (was causing 401 console noise).
 
-### Redesign backlog (add later when user provides data)
+## Admin Access, Env Docs & Deployment (June 2026)
+- Admin/staff login now works: `admin@greatworksf.org` / `GreatWorks@2026` (role Admin). Seeded idempotently on backend startup from `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `backend/.env` (reuses existing passlib-bcrypt + JWT). Added `ensure_admin_user()` in `server.py`. Credentials saved to `/app/memory/test_credentials.md`. Restyled `/login` to institutional theme.
+- Added env vars to `backend/.env`: `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`.
+- Created `frontend/ENVIRONMENT_VARIABLES.md` (full reference of all frontend + backend env vars).
+- Created `/app/DEPLOYMENT.md` (MongoDB Atlas + Render backend + Vercel frontend, step-by-step) and `frontend/vercel.json` (SPA rewrites).
+
+## Redesign backlog (add later when user provides data)
 - Real leadership profiles (photos/names/titles/bios).
 - Real registration/establishment/tax-exemption identity strip.
 - Real government/institutional/CSR partner listings + logos (with permission).
